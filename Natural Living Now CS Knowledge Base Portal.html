@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#070D1A]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natural Living Now - CS Knowledge Base Portal</title>
+  
+  <!-- Google Fonts: Lexend & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <script defer data-auto-replace-svg="nest" src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/js/all.min.js"></script>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#070D1A',
+              sidebar: '#0D1628',
+              card: '#1B2739',
+              cardHover: '#202C3D',
+              border: 'rgba(120, 150, 180, 0.25)',
+              teal: '#00CFA3',
+              tealBright: '#00F5C8',
+              blue: '#1599E8',
+              orange: '#FF9D2E',
+              gold: '#E6A82F',
+              text: '#F5F7FA',
+              muted: '#B8C2D1',
+              darkMuted: '#7E8A9E'
+            }
+          },
+          fontFamily: {
+            heading: ['Lexend', 'sans-serif'],
+            body: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Vue.js 3 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.4.27/dist/vue.global.prod.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #F5F7FA;
+      background-color: #070D1A;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5, h6, .font-heading {
+      font-family: 'Lexend', sans-serif;
+    }
+    
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070D1A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1B2739;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00CFA3;
+    }
+
+    .border-custom {
+      border: 1px solid rgba(120, 150, 180, 0.22);
+    }
+    
+    .glow-teal {
+      box-shadow: 0 0 15px rgba(0, 207, 163, 0.15);
+    }
+
+    
+    /* ---- Readability & polish ---- */
+    body { font-size: 15px; line-height: 1.55; }
+    .text-xs { font-size: 0.86rem !important; line-height: 1.35rem !important; }
+    .text-\[11px\] { font-size: 0.8rem !important; }
+    .text-\[10px\] { font-size: 0.72rem !important; }
+    .text-brand-darkMuted { color: #A3AFC2 !important; }
+    .text-brand-muted { color: #D2DAE6 !important; }
+    .border-custom { border: 1px solid rgba(150, 178, 210, 0.38); }
+    .bg-brand-card { box-shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 20px -12px rgba(0,0,0,.6); }
+    aside nav button { font-size: 0.92rem !important; padding-top: .65rem; padding-bottom: .65rem; }
+    aside nav button:hover { background: #202C3D; }
+    h1, h2 { letter-spacing: -0.01em; }
+    h3 { font-size: 1.15rem; }
+    button, a, input, select { transition: background-color .15s, border-color .15s, color .15s; }
+    :focus-visible { outline: 3px solid #00F5C8 !important; outline-offset: 2px; }
+    main table th { background: #14203A; color: #F5F7FA; }
+    main table td, main table th { padding: .7rem .9rem; }
+    .modal-close { display:inline-flex; align-items:center; gap:.4rem; padding:.55rem 1rem; font-family:'Lexend',sans-serif; font-weight:600; font-size:.9rem; color:#F5F7FA; background:#26344A; border:1px solid #7E93B0; border-radius:.6rem; cursor:pointer; white-space:nowrap; }
+    .modal-close:hover { background:#FF9D2E; border-color:#FF9D2E; color:#070D1A; }
+    .fixed.inset-0 > div { box-shadow: 0 24px 60px -12px rgba(0,0,0,.8); border: 1px solid rgba(150,178,210,.45); max-height: 92vh; }
+
+    [v-cloak] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="h-full text-brand-text bg-brand-bg flex flex-col font-body antialiased">
+
+  <div id="app" v-cloak class="flex h-screen overflow-hidden">
+
+    <!-- Toast Notification -->
+    <div v-if="toast.show" class="fixed top-5 right-5 z-50 bg-brand-teal text-slate-950 px-4 py-3 rounded-lg shadow-xl font-semibold flex items-center gap-2 transition-all transform duration-300">
+      <i class="fa-solid fa-circle-check text-lg"></i>
+      <span>{{ toast.message }}</span>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-brand-sidebar flex-shrink-0 flex flex-col border-r border-custom z-20 transition-all duration-300">
+      <!-- Brand Header -->
+      <div class="p-4 border-b border-custom flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-brand-teal/20 border border-brand-teal flex items-center justify-center text-brand-teal text-xl font-bold">
+          <i class="fa-solid fa-leaf"></i>
+        </div>
+        <div>
+          <h1 class="font-heading font-bold text-sm tracking-wide text-white leading-tight">NATURAL LIVING NOW</h1>
+          <p class="text-[11px] text-brand-teal font-medium tracking-wider uppercase">CS KB Portal</p>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Bar -->
+      <div class="px-4 py-2 bg-[#0a1221] border-b border-custom flex items-center justify-between text-xs text-brand-muted">
+        <span>Target FCR: <strong class="text-brand-tealBright">&gt;92%</strong></span>
+        <span>Version: <strong class="text-white">v3.2</strong></span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 overflow-y-auto p-3 space-y-1">
+        <div class="text-[10px] font-bold text-brand-darkMuted uppercase px-3 pt-2 pb-1 tracking-wider">Main Hub</div>
+        <button @click="navigateTo('dashboard')" :class="navClass('dashboard')">
+          <i class="fa-solid fa-chart-line w-5"></i>
+          <span>Dashboard</span>
+        </button>
+        <button @click="navigateTo('call-drivers')" :class="navClass('call-drivers')">
+          <i class="fa-solid fa-headset w-5"></i>
+          <span>Top Call Drivers</span>
+          <span class="ml-auto bg-brand-teal/20 text-brand-teal text-[10px] px-1.5 py-0.5 rounded-full font-bold">16</span>
+        </button>
+        <button @click="navigateTo('decision-tree')" :class="navClass('decision-tree')">
+          <i class="fa-solid fa-diagram-project w-5"></i>
+          <span>Call Decision Tree</span>
+        </button>
+
+        <div class="text-[10px] font-bold text-brand-darkMuted uppercase px-3 pt-4 pb-1 tracking-wider">Knowledge Base</div>
+        <button @click="navigateTo('product-catalog')" :class="navClass('product-catalog')">
+          <i class="fa-solid fa-pills w-5"></i>
+          <span>Product Catalog</span>
+        </button>
+        <button @click="navigateTo('product-education')" :class="navClass('product-education')">
+          <i class="fa-solid fa-book-medical w-5"></i>
+          <span>Product Education</span>
+        </button>
+        <button @click="navigateTo('authentication')" :class="navClass('authentication')">
+          <i class="fa-solid fa-shield-halved w-5"></i>
+          <span>Auth &amp; Red Flags</span>
+        </button>
+        <button @click="navigateTo('shipping')" :class="navClass('shipping')">
+          <i class="fa-solid fa-truck-fast w-5"></i>
+          <span>Shipping &amp; Fulfillment</span>
+        </button>
+        <button @click="navigateTo('order-mods')" :class="navClass('order-mods')">
+          <i class="fa-solid fa-pen-to-square w-5"></i>
+          <span>Order Modifications</span>
+        </button>
+        <button @click="navigateTo('mbg-sts')" :class="navClass('mbg-sts')">
+          <i class="fa-solid fa-hand-holding-dollar w-5"></i>
+          <span>180D MBG / Save-Sale</span>
+        </button>
+        <button @click="navigateTo('refund-processing')" :class="navClass('refund-processing')">
+          <i class="fa-solid fa-file-invoice-dollar w-5"></i>
+          <span>Refund SOPs</span>
+        </button>
+
+        <div class="text-[10px] font-bold text-brand-darkMuted uppercase px-3 pt-4 pb-1 tracking-wider">Systems &amp; Compliance</div>
+        <button @click="navigateTo('crm-guides')" :class="navClass('crm-guides')">
+          <i class="fa-solid fa-desktop w-5"></i>
+          <span>CRM &amp; Systems</span>
+        </button>
+        <button @click="navigateTo('escalations')" :class="navClass('escalations')">
+          <i class="fa-solid fa-triangle-exclamation w-5"></i>
+          <span>Escalation Center</span>
+        </button>
+        <button @click="navigateTo('calculators')" :class="navClass('calculators')">
+          <i class="fa-solid fa-calculator w-5"></i>
+          <span>Calculators &amp; Tools</span>
+        </button>
+        <button @click="navigateTo('qa-monitoring')" :class="navClass('qa-monitoring')">
+          <i class="fa-solid fa-clipboard-check w-5"></i>
+          <span>QA Evaluation</span>
+        </button>
+        <button @click="navigateTo('training')" :class="navClass('training')">
+          <i class="fa-solid fa-graduation-cap w-5"></i>
+          <span>Training Center</span>
+        </button>
+
+        <div class="text-[10px] font-bold text-brand-darkMuted uppercase px-3 pt-4 pb-1 tracking-wider">Resources</div>
+        <button @click="navigateTo('glossary-faq')" :class="navClass('glossary-faq')">
+          <i class="fa-solid fa-circle-question w-5"></i>
+          <span>Glossary &amp; FAQs</span>
+        </button>
+        <button @click="navigateTo('directory')" :class="navClass('directory')">
+          <i class="fa-solid fa-address-book w-5"></i>
+          <span>Contacts &amp; Links</span>
+        </button>
+        <button @click="navigateTo('favorites')" :class="navClass('favorites')">
+          <i class="fa-solid fa-star w-5"></i>
+          <span>Favorites</span>
+          <span v-if="favorites.length > 0" class="ml-auto bg-brand-gold/20 text-brand-gold text-[10px] px-1.5 py-0.5 rounded-full font-bold">{{ favorites.length }}</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="p-3 border-t border-custom text-xs bg-[#091120]">
+        <div class="flex items-center justify-between text-brand-muted mb-1">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-brand-teal animate-pulse"></span> System Live
+          </span>
+          <span class="text-[10px]">Oltask CS Team</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-brand-bg">
+
+      <!-- TOP NAVBAR -->
+      <header class="h-16 bg-brand-sidebar border-b border-custom px-6 flex items-center justify-between flex-shrink-0 z-10">
+        <!-- Search Input Trigger -->
+        <div class="relative w-full max-w-xl">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-darkMuted"></i>
+          <input 
+            type="text" 
+            v-model="globalQuery"
+            @focus="showSearchModal = true"
+            placeholder="Search products, ingredients, SOPs, refund rules, scripts... (Ctrl+K)"
+            class="w-full bg-[#131f33] text-white placeholder-brand-darkMuted text-sm rounded-lg pl-10 pr-4 py-2 border border-custom focus:outline-none focus:border-brand-teal transition-colors"
+          >
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-brand-card px-1.5 py-0.5 rounded text-brand-darkMuted border border-custom">CTRL K</span>
+        </div>
+
+        <!-- Right Quick Actions -->
+        <div class="flex items-center gap-3">
+          <button @click="navigateTo('decision-tree')" class="px-3 py-1.5 rounded-lg bg-brand-teal/10 hover:bg-brand-teal/20 text-brand-teal text-xs font-semibold border border-brand-teal/30 flex items-center gap-2 transition">
+            <i class="fa-solid fa-sitemap"></i>
+            <span>Call Flow Tree</span>
+          </button>
+          <button @click="navigateTo('calculators')" class="px-3 py-1.5 rounded-lg bg-brand-blue/10 hover:bg-brand-blue/20 text-brand-blue text-xs font-semibold border border-brand-blue/30 flex items-center gap-2 transition">
+            <i class="fa-solid fa-calculator"></i>
+            <span>MBG Calc</span>
+          </button>
+          <div class="h-6 w-px bg-brand-border mx-1"></div>
+          <div class="text-right text-xs">
+            <div class="font-bold text-white">Inbound Support Agent</div>
+            <div class="text-[10px] text-brand-teal">Natural Living Now</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- VIEW BODY AREA -->
+      <main class="flex-1 overflow-y-auto p-6 space-y-6">
+
+        <!-- GLOBAL SEARCH MODAL / OVERLAY -->
+        <div v-if="showSearchModal" @click.self="showSearchModal = false" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-start justify-center pt-16 px-4">
+          <div class="bg-brand-sidebar border border-brand-teal/40 rounded-xl w-full max-w-3xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <!-- Search Bar -->
+            <div class="p-4 border-b border-custom flex items-center gap-3 bg-[#0a1221]">
+              <i class="fa-solid fa-magnifying-glass text-brand-teal text-lg"></i>
+              <input 
+                type="text" 
+                v-model="globalQuery"
+                ref="searchModalInput"
+                placeholder="Search products, SOPs, refund rules, scripts, ingredients..."
+                class="bg-transparent text-white w-full text-base focus:outline-none placeholder-brand-darkMuted font-medium"
+              >
+              <button type="button" @click="showSearchModal = false" aria-label="Close search" class="modal-close">&times; Close (Esc)</button>
+            </div>
+
+            <!-- Filter Badges -->
+            <div class="px-4 py-2 bg-brand-card border-b border-custom flex items-center gap-2 text-xs overflow-x-auto">
+              <span class="text-brand-darkMuted font-bold">Category:</span>
+              <button @click="searchCategory = 'all'" :class="searchCategory === 'all' ? 'bg-brand-teal text-slate-950 font-bold' : 'bg-[#131f33] text-brand-muted hover:text-white'" class="px-2.5 py-1 rounded-full text-xs transition">All</button>
+              <button @click="searchCategory = 'product'" :class="searchCategory === 'product' ? 'bg-brand-teal text-slate-950 font-bold' : 'bg-[#131f33] text-brand-muted hover:text-white'" class="px-2.5 py-1 rounded-full text-xs transition">Products</button>
+              <button @click="searchCategory = 'sop'" :class="searchCategory === 'sop' ? 'bg-brand-teal text-slate-950 font-bold' : 'bg-[#131f33] text-brand-muted hover:text-white'" class="px-2.5 py-1 rounded-full text-xs transition">SOPs</button>
+              <button @click="searchCategory = 'policy'" :class="searchCategory === 'policy' ? 'bg-brand-teal text-slate-950 font-bold' : 'bg-[#131f33] text-brand-muted hover:text-white'" class="px-2.5 py-1 rounded-full text-xs transition">Policies</button>
+              <button @click="searchCategory = 'script'" :class="searchCategory === 'script' ? 'bg-brand-teal text-slate-950 font-bold' : 'bg-[#131f33] text-brand-muted hover:text-white'" class="px-2.5 py-1 rounded-full text-xs transition">Scripts</button>
+            </div>
+
+            <!-- Results List -->
+            <div class="p-4 overflow-y-auto space-y-2 flex-1">
+              <div v-if="filteredSearchResults.length === 0" class="text-center py-12 text-brand-darkMuted">
+                <i class="fa-solid fa-folder-open text-4xl mb-3 text-brand-card"></i>
+                <p class="text-sm">No matching knowledge articles found for "{{ globalQuery }}"</p>
+                <p class="text-xs mt-1">Try searching keywords like "Turmeric", "MBG", "48-Hour", "Address Change", or "Shopify"</p>
+              </div>
+
+              <div 
+                v-for="(res, idx) in filteredSearchResults" 
+                :key="idx"
+                @click="openSearchResult(res)"
+                class="p-3.5 bg-brand-card hover:bg-brand-cardHover border border-custom rounded-lg cursor-pointer transition flex items-start justify-between group"
+              >
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-teal/15 text-brand-teal border border-brand-teal/30">{{ res.category }}</span>
+                    <span class="text-xs text-brand-darkMuted">Source: {{ res.source }}</span>
+                  </div>
+                  <h4 class="font-heading font-semibold text-white group-hover:text-brand-tealBright text-sm">{{ res.title }}</h4>
+                  <p class="text-xs text-brand-muted mt-1 line-clamp-2">{{ res.description }}</p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-brand-darkMuted group-hover:text-brand-teal text-sm mt-2 transition"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- 1. DASHBOARD VIEW -->
+        <!-- ===================================== -->
+        <div v-if="currentTab === 'dashboard'" class="space-y-6">
+          
+          <!-- Hero Banner matching design reference -->
+          <div class="relative bg-gradient-to-r from-[#0d1c33] via-[#112442] to-[#0d1628] rounded-2xl p-6 border border-brand-teal/30 overflow-hidden shadow-xl">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 max-w-3xl">
+              <div class="flex items-center gap-2 text-brand-teal text-xs font-bold uppercase tracking-widest mb-2">
+                <i class="fa-solid fa-bolt"></i> Agent Portal &amp; First Call Resolution Hub
+              </div>
+              <h1 class="text-3xl font-heading font-extrabold text-white mb-3">Welcome to Natural Living Now Support</h1>
+              <p class="text-brand-muted text-sm leading-relaxed mb-6">
+                This internal knowledge portal equips support agents with instant access to accurate product education, 180-Day MBG policy workflows, live refund SOPs, interactive calculators, and step-by-step decision trees to maximize First Call Resolution (FCR).
+              </p>
+              
+              <div class="flex flex-wrap items-center gap-3">
+                <button @click="navigateTo('decision-tree')" class="px-5 py-2.5 rounded-lg bg-brand-teal hover:bg-brand-tealBright text-slate-950 font-bold text-sm transition flex items-center gap-2 shadow-lg glow-teal">
+                  <i class="fa-solid fa-sitemap"></i> CALL FLOW DECISION TREE
+                </button>
+                <button @click="navigateTo('calculators')" class="px-5 py-2.5 rounded-lg bg-brand-card hover:bg-brand-cardHover border border-brand-teal/40 text-white font-semibold text-sm transition flex items-center gap-2">
+                  <i class="fa-solid fa-calculator text-brand-teal"></i> OPEN CALCULATORS
+                </button>
+                <button @click="navigateTo('call-drivers')" class="px-5 py-2.5 rounded-lg bg-brand-card hover:bg-brand-cardHover border border-custom text-brand-muted hover:text-white font-semibold text-sm transition flex items-center gap-2">
+                  <i class="fa-solid fa-list-check text-brand-blue"></i> TOP 16 CALL DRIVERS
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Metrics / Information Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-brand-card p-4 rounded-xl border border-custom hover:border-brand-teal/40 transition">
+              <div class="flex justify-between items-start mb-2">
+                <span class="text-xs text-brand-muted font-medium">Guarantee Period</span>
+                <i class="fa-solid fa-calendar-check text-brand-teal text-lg"></i>
+              </div>
+              <div class="text-2xl font-heading font-bold text-white mb-1">180 Days</div>
+              <p class="text-xs text-brand-darkMuted">Calculated from original purchase date</p>
+            </div>
+
+            <div class="bg-brand-card p-4 rounded-xl border border-custom hover:border-brand-teal/40 transition">
+              <div class="flex justify-between items-start mb-2">
+                <span class="text-xs text-brand-muted font-medium">Order Modification</span>
+                <i class="fa-solid fa-clock text-brand-orange text-lg"></i>
+              </div>
+              <div class="text-2xl font-heading font-bold text-brand-orange mb-1">48 Hours</div>
+              <p class="text-xs text-brand-darkMuted">Window to edit address / quantity before fulfillment</p>
+            </div>
+
+            <div class="bg-brand-card p-4 rounded-xl border border-custom hover:border-brand-teal/40 transition">
+              <div class="flex justify-between items-start mb-2">
+                <span class="text-xs text-brand-muted font-medium">Retention Framework</span>
+                <i class="fa-solid fa-shield-heart text-brand-blue text-lg"></i>
+              </div>
+              <div class="text-2xl font-heading font-bold text-white mb-1">2-Tier STS</div>
+              <p class="text-xs text-brand-darkMuted">Save-the-Sale: Tier 1 (20%) then Tier 2 (50%)</p>
+            </div>
+
+            <div class="bg-brand-card p-4 rounded-xl border border-custom hover:border-brand-teal/40 transition">
+              <div class="flex justify-between items-start mb-2">
+                <span class="text-xs text-brand-muted font-medium">Primary Fulfillment</span>
+                <i class="fa-solid fa-warehouse text-brand-gold text-lg"></i>
+              </div>
+              <div class="text-2xl font-heading font-bold text-white mb-1">JetPack Shipping, Tallmadge, OH</div>
+              <p class="text-xs text-brand-darkMuted">Domestic transit 3-7 business days, UPS Expedited</p>
+            </div>
+          </div>
+
+          <!-- Quick Access Cards Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Quick Call Drivers -->
+            <div class="lg:col-span-2 bg-brand-card rounded-xl p-5 border border-custom">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-heading font-bold text-lg text-white flex items-center gap-2">
+                  <i class="fa-solid fa-fire text-brand-orange"></i> High-Volume Call Drivers
+                </h3>
+                <button @click="navigateTo('call-drivers')" class="text-xs text-brand-teal hover:underline font-semibold">View All 16 Drivers &rarr;</button>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div 
+                  v-for="driver in topCallDrivers.slice(0, 6)" 
+                  :key="driver.id"
+                  @click="openCallDriver(driver)"
+                  class="p-3 bg-[#131f33] hover:bg-brand-cardHover border border-custom rounded-lg cursor-pointer transition flex items-center justify-between group"
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="w-7 h-7 rounded-full bg-brand-teal/10 text-brand-teal border border-brand-teal/30 flex items-center justify-center text-xs font-bold">
+                      {{ driver.id }}
+                    </span>
+                    <div>
+                      <div class="text-xs font-semibold text-white group-hover:text-brand-teal">{{ driver.title }}</div>
+                      <div class="text-[10px] text-brand-darkMuted">{{ driver.intent }}</div>
+                    </div>
+                  </div>
+                  <i class="fa-solid fa-chevron-right text-xs text-brand-darkMuted group-hover:text-brand-teal"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Important Links & Escalations Panel -->
+            <div class="bg-brand-card rounded-xl p-5 border border-custom flex flex-col justify-between">
+              <div>
+                <h3 class="font-heading font-bold text-lg text-white mb-4 flex items-center gap-2">
+                  <i class="fa-solid fa-triangle-exclamation text-brand-gold"></i> Urgent Compliance Triggers
+                </h3>
+                <div class="space-y-2.5 text-xs">
+                  <div class="p-2.5 bg-red-950/30 border border-red-800/40 rounded-lg text-red-200">
+                    <div class="font-bold flex items-center gap-1.5 text-red-400">
+                      <i class="fa-solid fa-user-doctor"></i> Medical / Adverse Reaction
+                    </div>
+                    <p class="text-[11px] mt-1 text-slate-300">Instruct to discontinue immediately. Do not offer medical advice. Escalate to QA and April/Jose.</p>
+                  </div>
+                  <div class="p-2.5 bg-amber-950/30 border border-amber-800/40 rounded-lg text-amber-200">
+                    <div class="font-bold flex items-center gap-1.5 text-amber-400">
+                      <i class="fa-solid fa-[#gavel]"></i> Legal / Chargeback Threats
+                    </div>
+                    <p class="text-[11px] mt-1 text-slate-300">Do not argue. Bypass retention, issue 100% refund with no return, escalate to April/Jose.</p>
+                  </div>
+                  <div class="p-2.5 bg-blue-950/30 border border-blue-800/40 rounded-lg text-blue-200">
+                    <div class="font-bold flex items-center gap-1.5 text-blue-400">
+                      <i class="fa-solid fa-id-card"></i> 2-DPA Verification Strict Rule
+                    </div>
+                    <p class="text-[11px] mt-1 text-slate-300">Owner: registered first and last name plus 1 of email, Order ID, zip code or phone.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-4 border-t border-custom">
+                <button @click="navigateTo('escalations')" class="w-full py-2 bg-brand-orange/20 hover:bg-brand-orange/30 text-brand-orange border border-brand-orange/40 rounded-lg text-xs font-bold transition">
+                  OPEN ESCALATION PROTOCOLS &rarr;
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Featured Product Quick Bar -->
+          <div class="bg-brand-card rounded-xl p-5 border border-custom">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-heading font-bold text-lg text-white flex items-center gap-2">
+                <i class="fa-solid fa-leaf text-brand-teal"></i> Featured Product Line
+              </h3>
+              <button @click="navigateTo('product-catalog')" class="text-xs text-brand-teal hover:underline font-semibold">View Full Product Suite &rarr;</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div 
+                v-for="prod in products.slice(0, 3)" 
+                :key="prod.id"
+                @click="openProductModal(prod)"
+                class="p-4 bg-[#131f33] hover:bg-brand-cardHover border border-custom rounded-xl cursor-pointer transition group"
+              >
+                <div class="flex justify-between items-start mb-2">
+                  <span class="text-[10px] font-bold text-brand-teal uppercase px-2 py-0.5 rounded bg-brand-teal/10 border border-brand-teal/20">{{ prod.category }}</span>
+                  <span class="text-xs font-bold text-white">${{ prod.price }}</span>
+                </div>
+                <h4 class="font-heading font-bold text-white group-hover:text-brand-tealBright text-sm mb-1">{{ prod.name }}</h4>
+                <p class="text-xs text-brand-muted line-clamp-2 mb-3">{{ prod.purpose }}</p>
+                <div class="text-[11px] text-brand-darkMuted flex items-center gap-2">
+                  <span><i class="fa-solid fa-capsules text-brand-teal"></i> {{ prod.size }}</span>
+                  <span>•</span>
+                  <span>Dosage: {{ prod.dosage }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- 2. CALL DRIVERS VIEW -->
+        <!-- ===================================== -->
+        <div v-if="currentTab === 'call-drivers'" class="space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-brand-card p-5 rounded-xl border border-custom">
+            <div>
+              <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-headset text-brand-teal"></i> Top 16 Customer Call Drivers
+              </h2>
+              <p class="text-xs text-brand-muted mt-1">
+                Approved operational SOPs, authentication rules, agent scripts, and decision logic for live call resolution.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <input 
+                type="text" 
+                v-model="driverSearchQuery"
+                placeholder="Filter call drivers..."
+                class="bg-[#131f33] text-white placeholder-brand-darkMuted text-xs rounded-lg px-3 py-2 border border-custom focus:outline-none focus:border-brand-teal"
+              >
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div 
+              v-for="driver in filteredCallDrivers" 
+              :key="driver.id"
+              class="bg-brand-card p-5 rounded-xl border border-custom hover:border-brand-teal/50 transition flex flex-col justify-between"
+            >
+              <div>
+                <div class="flex justify-between items-start mb-3">
+                  <span class="w-8 h-8 rounded-lg bg-brand-teal/15 text-brand-teal font-bold flex items-center justify-center text-xs border border-brand-teal/30">
+                    #{{ driver.id }}
+                  </span>
+                  <span class="text-[10px] font-bold text-brand-darkMuted uppercase px-2 py-0.5 rounded bg-[#131f33] border border-custom">
+                    {{ driver.category }}
+                  </span>
+                </div>
+                <h3 class="font-heading font-bold text-white text-base mb-2">{{ driver.title }}</h3>
+                <p class="text-xs text-brand-muted line-clamp-3 mb-4">{{ driver.intent }}</p>
+              </div>
+
+              <div class="pt-3 border-t border-custom flex items-center justify-between">
+                <span class="text-[10px] text-brand-teal font-medium flex items-center gap-1">
+                  <i class="fa-solid fa-shield"></i> {{ driver.authRequired ? '2-DPA Auth Required' : 'Basic Verification' }}
+                </span>
+                <button @click="openCallDriver(driver)" class="px-3 py-1.5 rounded bg-brand-teal/10 hover:bg-brand-teal/20 text-brand-teal text-xs font-semibold transition">
+                  View SOP &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CALL DRIVER DETAIL MODAL -->
+        <div v-if="activeCallDriver" @click.self="activeCallDriver = null" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div class="bg-brand-sidebar border border-brand-teal/40 rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-custom bg-[#0a1221] flex justify-between items-start sticky top-0 z-10">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="px-2 py-0.5 rounded bg-brand-teal text-slate-950 font-bold text-xs">Driver #{{ activeCallDriver.id }}</span>
+                  <span class="text-xs text-brand-darkMuted">[Source: SOP 5 - CS Top Call Drivers]</span>
+                </div>
+                <h3 class="font-heading font-bold text-xl text-white">{{ activeCallDriver.title }}</h3>
+              </div>
+              <button type="button" @click="activeCallDriver = null" aria-label="Close window" class="modal-close">&times; Close</button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6 space-y-6">
+              <!-- Customer Intent & Auth -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-brand-card p-4 rounded-lg border border-custom">
+                  <h4 class="font-heading font-bold text-xs uppercase text-brand-teal tracking-wider mb-2">Customer Intent</h4>
+                  <p class="text-xs text-brand-text">{{ activeCallDriver.intent }}</p>
+                </div>
+                <div class="bg-brand-card p-4 rounded-lg border border-custom">
+                  <h4 class="font-heading font-bold text-xs uppercase text-brand-orange tracking-wider mb-2">Authentication Rule</h4>
+                  <p class="text-xs text-brand-text">{{ activeCallDriver.authRule }}</p>
+                </div>
+              </div>
+
+              <!-- Step-by-Step Call Workflow -->
+              <div class="bg-brand-card p-5 rounded-lg border border-custom">
+                <h4 class="font-heading font-bold text-sm text-white mb-3 flex items-center gap-2">
+                  <i class="fa-solid fa-diagram-next text-brand-teal"></i> Mandatory Step-by-Step Call Workflow
+                </h4>
+                <ol class="space-y-2 text-xs text-brand-muted list-decimal list-inside">
+                  <li v-for="(step, sIdx) in activeCallDriver.steps" :key="sIdx" class="leading-relaxed">
+                    <strong class="text-white">{{ step.title }}:</strong> {{ step.detail }}
+                  </li>
+                </ol>
+              </div>
+
+              <!-- Approved Agent Script -->
+              <div class="bg-[#0b172a] p-5 rounded-lg border border-brand-teal/30">
+                <div class="flex justify-between items-center mb-2">
+                  <h4 class="font-heading font-bold text-xs uppercase text-brand-tealBright tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-comment-dots"></i> Approved Verbatim Script
+                  </h4>
+                  <button @click="copyText(activeCallDriver.script)" class="px-2.5 py-1 bg-brand-teal/20 hover:bg-brand-teal/30 text-brand-teal text-xs font-bold rounded flex items-center gap-1 transition">
+                    <i class="fa-solid fa-copy"></i> Copy Script
+                  </button>
+                </div>
+                <p class="text-xs italic text-brand-text leading-relaxed bg-brand-card p-3 rounded border border-custom">
+                  "{{ activeCallDriver.script }}"
+                </p>
+              </div>
+
+              <!-- Prohibited Actions & Escalations -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-red-950/20 border border-red-800/40 p-4 rounded-lg">
+                  <h4 class="font-heading font-bold text-xs uppercase text-red-400 tracking-wider mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-ban"></i> Prohibited Actions (DO NOT DO)
+                  </h4>
+                  <p class="text-xs text-red-200 leading-relaxed">{{ activeCallDriver.prohibited }}</p>
+                </div>
+                <div class="bg-amber-950/20 border border-amber-800/40 p-4 rounded-lg">
+                  <h4 class="font-heading font-bold text-xs uppercase text-amber-400 tracking-wider mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Escalation Triggers
+                  </h4>
+                  <p class="text-xs text-amber-200 leading-relaxed">{{ activeCallDriver.escalation }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- 3. DECISION TREE VIEW -->
+        <!-- ===================================== -->
+        <div v-if="currentTab === 'decision-tree'" class="space-y-6">
+          <div class="bg-brand-card p-5 rounded-xl border border-custom">
+            <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-diagram-project text-brand-teal"></i> Interactive Call Flow Decision Tree
+            </h2>
+            <p class="text-xs text-brand-muted mt-1">
+              Follow this step-by-step interactive decision logic during live calls to guarantee SOP compliance.
+            </p>
+          </div>
+
+          <!-- Decision Tree Container -->
+          <div class="bg-brand-card rounded-xl p-6 border border-custom max-w-4xl mx-auto shadow-xl">
+            <!-- Step Breadcrumb -->
+            <div class="flex items-center gap-2 text-xs text-brand-muted mb-6 pb-4 border-b border-custom">
+              <span class="text-brand-teal font-bold">Current Node:</span>
+              <span class="px-2.5 py-1 bg-brand-teal/15 text-brand-teal font-bold rounded border border-brand-teal/30">
+                Step {{ currentTreeNode.step }}: {{ currentTreeNode.title }}
+              </span>
+            </div>
+
+            <!-- Node Card -->
+            <div class="bg-[#121e30] p-6 rounded-xl border border-brand-teal/30 space-y-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-brand-teal/20 text-brand-teal border border-brand-teal font-bold flex items-center justify-center text-lg">
+                  <i :class="currentTreeNode.icon"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-heading font-bold text-white">{{ currentTreeNode.question }}</h3>
+                  <p class="text-xs text-brand-muted mt-1">{{ currentTreeNode.description }}</p>
+                </div>
+              </div>
+
+              <!-- Approved Script inside node if available -->
+              <div v-if="currentTreeNode.script" class="p-3 bg-brand-sidebar rounded border border-custom text-xs italic text-brand-text">
+                <span class="text-brand-teal font-bold not-italic">Say: </span> "{{ currentTreeNode.script }}"
+              </div>
+
+              <!-- Decision Options / Branch Buttons -->
+              <div class="pt-4 space-y-2">
+                <div class="text-xs font-bold text-brand-darkMuted uppercase tracking-wider mb-2">Select Customer Response / Action:</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <button 
+                    v-for="(option, oIdx) in currentTreeNode.options" 
+                    :key="oIdx"
+                    @click="advanceDecisionTree(option.targetNode)"
+                    class="p-3.5 bg-brand-card hover:bg-brand-cardHover border border-custom hover:border-brand-teal rounded-lg text-left transition flex items-center justify-between group"
+                  >
+                    <div>
+                      <div class="text-xs font-bold text-white group-hover:text-brand-teal">{{ option.label }}</div>
+                      <div class="text-[10px] text-brand-darkMuted mt-0.5">{{ option.subtext }}</div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-xs text-brand-darkMuted group-hover:text-brand-teal transition"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="mt-6 flex items-center justify-between pt-4 border-t border-custom">
+              <button 
+                @click="resetDecisionTree" 
+                class="px-4 py-2 rounded bg-brand-card hover:bg-brand-cardHover border border-custom text-xs text-brand-muted font-semibold transition flex items-center gap-2"
+              >
+                <i class="fa-solid fa-rotate-left"></i> Start Over
+              </button>
+              <div class="text-[10px] text-brand-darkMuted">
+                [Source: SOP 6 - Inbound Call Flow &amp; Decision Framework]
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- 4. PRODUCT CATALOG & EDUCATION VIEW -->
+        <!-- ===================================== -->
+        <div v-if="currentTab === 'product-catalog' || currentTab === 'product-education'" class="space-y-6">
+          <div class="bg-brand-card p-5 rounded-xl border border-custom flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-pills text-brand-teal"></i> Natural Living Now Product Knowledge Base
+              </h2>
+              <p class="text-xs text-brand-muted mt-1">
+                Authorized dietary supplement specifications, dosage guidelines, key active ingredients, and companion recommendations.
+              </p>
+            </div>
+            <input 
+              type="text" 
+              v-model="productSearchQuery" 
+              placeholder="Filter products or ingredients..."
+              class="bg-[#131f33] text-white placeholder-brand-darkMuted text-xs rounded-lg px-3 py-2 border border-custom focus:outline-none focus:border-brand-teal"
+            >
+          </div>
+
+          <!-- Product Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div 
+              v-for="prod in filteredProducts" 
+              :key="prod.id"
+              class="bg-brand-card rounded-xl border border-custom hover:border-brand-teal/50 transition overflow-hidden flex flex-col justify-between"
+            >
+              <div class="p-5 space-y-3">
+                <div class="flex justify-between items-start">
+                  <span class="text-[10px] font-bold text-brand-teal bg-brand-teal/15 px-2.5 py-0.5 rounded border border-brand-teal/30 uppercase">
+                    {{ prod.category }}
+                  </span>
+                  <span class="text-sm font-bold text-white">${{ prod.price }} USD</span>
+                </div>
+
+                <h3 class="text-lg font-heading font-bold text-white">{{ prod.name }}</h3>
+                <p class="text-xs text-brand-muted leading-relaxed">{{ prod.purpose }}</p>
+
+                <div class="bg-[#121d2d] p-3 rounded-lg border border-custom space-y-1.5 text-xs">
+                  <div><strong class="text-white">Bottle Size:</strong> {{ prod.size }}</div>
+                  <div><strong class="text-white">Daily Dosage:</strong> {{ prod.dosage }}</div>
+                  <div><strong class="text-white">Directions:</strong> {{ prod.directions }}</div>
+                </div>
+
+                <!-- Active Ingredients Pills -->
+                <div>
+                  <span class="text-[10px] font-bold text-brand-darkMuted uppercase tracking-wider block mb-1">Key Ingredients:</span>
+                  <div class="flex flex-wrap gap-1">
+                    <span 
+                      v-for="(ing, iIdx) in prod.ingredients" 
+                      :key="iIdx"
+                      class="text-[10px] bg-brand-sidebar text-brand-muted px-2 py-0.5 rounded border border-custom"
+                    >
+                      {{ ing }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 bg-[#0d1627] border-t border-custom flex items-center justify-between">
+                <span class="text-[10px] text-amber-400 font-medium flex items-center gap-1">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Check Warnings
+                </span>
+                <button @click="openProductModal(prod)" class="px-3 py-1.5 bg-brand-teal hover:bg-brand-tealBright text-slate-950 font-bold text-xs rounded transition">
+                  Full Details &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRODUCT DETAIL MODAL -->
+        <div v-if="activeProduct" @click.self="activeProduct = null" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div class="bg-brand-sidebar border border-brand-teal/40 rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+            <div class="p-5 border-b border-custom bg-[#0a1221] flex justify-between items-start sticky top-0 z-10">
+              <div>
+                <span class="text-[10px] font-bold text-brand-teal bg-brand-teal/15 px-2 py-0.5 rounded border border-brand-teal/30 uppercase">
+                  {{ activeProduct.category }}
+                </span>
+                <h3 class="font-heading font-bold text-xl text-white mt-1">{{ activeProduct.name }}</h3>
+              </div>
+              <button type="button" @click="activeProduct = null" aria-label="Close window" class="modal-close">&times; Close</button>
+            </div>
+
+            <div class="p-6 space-y-5 text-xs">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-brand-card p-4 rounded-lg border border-custom">
+                <div><span class="text-brand-darkMuted block">Price:</span> <strong class="text-white text-sm">${{ activeProduct.price }}</strong></div>
+                <div><span class="text-brand-darkMuted block">Size / Count:</span> <strong class="text-white text-sm">{{ activeProduct.size }}</strong></div>
+                <div><span class="text-brand-darkMuted block">Daily Dosage:</span> <strong class="text-white text-sm">{{ activeProduct.dosage }}</strong></div>
+              </div>
+
+              <div>
+                <h4 class="font-heading font-bold text-sm text-brand-teal mb-1">Product Purpose &amp; Education</h4>
+                <p class="text-brand-text leading-relaxed bg-brand-card p-3 rounded border border-custom">{{ activeProduct.purpose }}</p>
+              </div>
+
+              <div>
+                <h4 class="font-heading font-bold text-sm text-brand-teal mb-1">Active Ingredient Profile</h4>
+                <div class="bg-brand-card p-3 rounded border border-custom space-y-1">
+                  <div v-for="(ing, idx) in activeProduct.ingredients" :key="idx" class="text-brand-muted flex items-center gap-2">
+                    <i class="fa-solid fa-check text-brand-teal"></i> {{ ing }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-amber-950/20 border border-amber-800/40 p-4 rounded-lg">
+                <h4 class="font-heading font-bold text-xs text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Mandatory Warnings &amp; Restrictions
+                </h4>
+                <p class="text-amber-200 leading-relaxed">{{ activeProduct.warnings }}</p>
+              </div>
+
+              <div class="bg-brand-card p-4 rounded-lg border border-custom">
+                <h4 class="font-heading font-bold text-xs text-brand-blue uppercase tracking-wider mb-1">Companion &amp; Cross-Sell Guidance</h4>
+                <p class="text-brand-muted">{{ activeProduct.companion }}</p>
+              </div>
+
+              <div class="text-[10px] text-brand-darkMuted border-t border-custom pt-3">
+                Source Document: 2. NL PRODUCT EDUCATION GUIDE &amp; 3. NL PRODUCT INFO REFERENCES
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- 5. AUTHENTICATION & RED FLAGS VIEW -->
+        <!-- ===================================== -->
+        <div v-if="currentTab === 'authentication'" class="space-y-6"><div><h2 class="text-2xl font-heading font-bold text-white">Account Authentication &amp; Red Flags</h2><p class="text-brand-muted mt-1">Source: Master Guide, Module 4 and Flows 1 and 16.</p></div><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">2/3-DPA verification</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Caller</th><th class="text-left align-top">Required</th><th class="text-left align-top">Scope</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Account owner</td><td class="align-top text-brand-text">Registered first and last name PLUS 1 of: registered email, Order ID, zip code, phone number</td><td class="align-top text-brand-text">Full account access, modifications, refunds, cancellations, address updates</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Third party</td><td class="align-top text-brand-text">Caller name, relationship, owner full name PLUS 2 of: last 4 of card, shipping City/State, email domain, phone/Order ID</td><td class="align-top text-brand-text">General tracking and non-sensitive status only. Changes need owner approval. Document in green text.</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Zero-tolerance red lines (PCI DSS and privacy)</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Data</th><th class="text-left align-top">Never</th><th class="text-left align-top">Always</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Street address</td><td class="align-top text-brand-text">Confirm or speak full street address</td><td class="align-top text-brand-text">Confirm City and State only</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Email</td><td class="align-top text-brand-text">Spell or read the email prefix</td><td class="align-top text-brand-text">Confirm domain only (e.g., @gmail.com)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Payment card</td><td class="align-top text-brand-text">Repeat, record or store full 16-digit number, CVV or expiry. Reading back a full card number = instant termination</td><td class="align-top text-brand-text">Last 4 digits only. Pause call recording when the customer states card details</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Health claims</td><td class="align-top text-brand-text">Say a supplement cures, treats, diagnoses or prevents any condition</td><td class="align-top text-brand-text">Use approved general wellness benefits and state the mandatory FDA disclaimer (wording not supplied in source)</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Ghost call protocol</h3><p class="text-brand-muted text-sm mb-3">Log: "Silent call. Followed 3-attempt Ghost Call protocol. Played Ghost Spiel. Disconnected." Disposition: Ghost Call / Silent Line.</p><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Time</th><th class="text-left align-top">Say</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">0-3s</td><td class="align-top text-brand-text">Hi, thank you for calling [brand]. This is [Agent Name], how can I help you?</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">4-6s</td><td class="align-top text-brand-text">Hello? Can you hear me?</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">7-9s</td><td class="align-top text-brand-text">If I do not receive an answer within 10 seconds I will disconnect the call.</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">10s+</td><td class="align-top text-brand-text">Since I did not receive any response, I am now disconnecting the call. Please call us back at 1-(888) 632-2690 or email us at support@azuravitalbalance.com so we can assist you. Have a great day and goodbye for now.</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Special exception protocols</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Scenario</th><th class="text-left align-top">Trigger</th><th class="text-left align-top">Impact</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Chargeback / legal bypass</td><td class="align-top text-brand-text">Bank dispute, chargeback, BBB, Attorney General or lawsuit threat</td><td class="align-top text-brand-text">Avoiding chargebacks outranks saving a sale</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Orphan transaction ("No Record Found")</td><td class="align-top text-brand-text">Customer claims a card charge but no matching CRM order</td><td class="align-top text-brand-text">Protects fiscal integrity (action steps not documented in source)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Duplicate order</td><td class="align-top text-brand-text">Multiple identical orders same day</td><td class="align-top text-brand-text">Prevents chargebacks from duplicate billing (action steps not documented in source)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Blacklisted account</td><td class="align-top text-brand-text">Flag at top of CRM record</td><td class="align-top text-brand-text">Hover the "i" beside the flag to see the reason</td></tr></tbody></table></section><p class="text-xs text-brand-darkMuted">Information not listed here is not available in the current Natural Living Now Knowledge Base.</p></div>
+<div v-if="currentTab === 'shipping'" class="space-y-6"><div><h2 class="text-2xl font-heading font-bold text-white">Shipping, Delivery &amp; 48-Hour Order Modification</h2><p class="text-brand-muted mt-1">Source: Master Guide, Module 6 and Flows 5, 6, 11, 12.</p></div><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Fulfillment</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Item</th><th class="text-left align-top">Rule</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Hub</td><td class="align-top text-brand-text">JetPack Shipping, Tallmadge, OH</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Carrier / speed</td><td class="align-top text-brand-text">UPS Expedited, 3-7 business days domestic</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Tracking</td><td class="align-top text-brand-text">Pull from UPS; never say shipped without an active scanned tracking link</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Lost</td><td class="align-top text-brand-text">Over 10 business days with no movement: reshipment request to Jesica Fraga</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Damaged / leaking / incorrect</td><td class="align-top text-brand-text">$0.00 replacement order in CheckoutChamp, log "Damaged in Transit", no return</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Delivered but missing</td><td class="align-top text-brand-text">Wait 24 hours, then free replacement ("Missing in Transit"). Never tell the customer to file a carrier claim</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Order modification zones</h3><p class="text-brand-muted text-sm mb-3">Never modify an order marked Shipped or with a UPS scan. Never apply bulk pricing retroactively to shipped single bottles.</p><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Zone</th><th class="text-left align-top">Elapsed</th><th class="text-left align-top">Action</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Green</td><td class="align-top text-brand-text">0-24 hours</td><td class="align-top text-brand-text">Hold shipping, click Pencil Icon, edit address/items/quantity, save, release hold. Void also allowed</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Amber</td><td class="align-top text-brand-text">24-48 hours</td><td class="align-top text-brand-text">Check fulfillment status; if Hold or Pending, halt and edit</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Red</td><td class="align-top text-brand-text">48+ hours / Shipped</td><td class="align-top text-brand-text">Locked. Customer writes REFUSED on the unopened box; carrier returns it at no charge; then process the return</td></tr></tbody></table></section><p class="text-xs text-brand-darkMuted">Information not listed here is not available in the current Natural Living Now Knowledge Base.</p></div>
+<div v-if="currentTab === 'mbg-sts'" class="space-y-6"><div><h2 class="text-2xl font-heading font-bold text-white">180-Day Money-Back Guarantee, Save-the-Sale &amp; Returns</h2><p class="text-brand-muted mt-1">Source: Master Guide, Module 7 and Flows 7, 9, 10.</p></div><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">MBG triage (from ORIGINAL PURCHASE DATE)</h3><p class="text-brand-muted text-sm mb-3">GI Revitalize has a separate 210-day Null Route guarantee with no physical return.</p><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Days</th><th class="text-left align-top">Directive</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">0-176</td><td class="align-top text-brand-text">Full STS: Tier 1 then Tier 2, before return</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">177-180</td><td class="align-top text-brand-text">Brief STS attempt; if declined or any friction, process RMA immediately</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">181-209</td><td class="align-top text-brand-text">Outside MBG. No STS. Deny the full refund. If a chargeback is threatened, notify SME or Manager and get approval for a courtesy full refund. Do not confirm a refund to the customer before approval.</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">210+</td><td class="align-top text-brand-text">Deny gracefully: "Our comprehensive safety net has concluded, but we want to continue supporting your health." If a chargeback is threatened, notify and escalate to SME or Manager: a full refund may be granted, subject to approval. Do not confirm a refund to the customer before escalation.</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Save-the-Sale tiers</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Tier</th><th class="text-left align-top">Offer</th><th class="text-left align-top">Return</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">1</td><td class="align-top text-brand-text">20% partial refund plus education (nutrients take 4 to 8 weeks)</td><td class="align-top text-brand-text">None: keep all bottles</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">2</td><td class="align-top text-brand-text">50% partial refund</td><td class="align-top text-brand-text">None: keep all bottles</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">3</td><td class="align-top text-brand-text">1 free courtesy bottle</td><td class="align-top text-brand-text">APPROVAL PENDING: DO NOT OFFER</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">RMA / returns</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Item</th><th class="text-left align-top">Rule</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Address</td><td class="align-top text-brand-text">JetPack Shipping Returns, 285 Northeast Ave, Tallmadge, OH 44278. Never the Sheridan, WY address (admin mail only)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Postage</td><td class="align-top text-brand-text">Customer pays. No prepaid labels. No restocking fee</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Package</td><td class="align-top text-brand-text">Include original invoice/Order ID or packing slip; sealed/unopened bottles</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Refund</td><td class="align-top text-brand-text">100% product cost minus shipping; posts 7-14 business days after receipt</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">International</td><td class="align-top text-brand-text">3 bottles or fewer: refund without return. More than 3: standard return</td></tr></tbody></table></section><p class="text-xs text-brand-darkMuted">Information not listed here is not available in the current Natural Living Now Knowledge Base.</p></div>
+<div v-if="currentTab === 'refund-processing'" class="space-y-6"><div><h2 class="text-2xl font-heading font-bold text-white">Refund Processing SOP</h2><p class="text-brand-muted mt-1">Source: Master Guide, Module 8 and Flow 8. Procedures are kept separate by system.</p></div><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Checkout Champ / Konnektive</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Step</th><th class="text-left align-top">Action</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">1</td><td class="align-top text-brand-text">Customer &gt; Customer Service &gt; Search Orders (email, Order ID, phone or full name)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">2</td><td class="align-top text-brand-text">Open customer profile, then click the Order ID for the Order Summary</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">3</td><td class="align-top text-brand-text">Actions panel: Full Refund or Partial Refund; enter exact amount for partial</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">4</td><td class="align-top text-brand-text">Choose Refund Reason; check Cancel Order After Refund? if applicable; Submit Refund</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">5</td><td class="align-top text-brand-text">System tries a Void first; if settled it processes a Refund</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Manual: Pending/Authorized</td><td class="align-top text-brand-text">Customer Profile &gt; Transactions &gt; Actions &gt; Void (0-48 hours). Partial voids not supported</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Manual: Settled/Complete</td><td class="align-top text-brand-text">Actions &gt; Refund with amount (7-14 business days)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Refunded outside CRM</td><td class="align-top text-brand-text">Check Refunded Externally before submitting</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Document</td><td class="align-top text-brand-text">History &gt; green + Note: reason, amount, resolution</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Shopify</h3><p class="text-brand-muted text-sm mb-3">Source does not say when to use Shopify instead of Checkout Champ.</p><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Step</th><th class="text-left align-top">Action</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">1</td><td class="align-top text-brand-text">Shopify Admin or mobile app &gt; Orders &gt; open the order &gt; Refund</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Full</td><td class="align-top text-brand-text">Enter full quantities; confirm Restock; enter shipping to refund if applicable; optional reason; choose method (original payment or store credit); confirm customer notification; click Refund $[Amount]</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Partial</td><td class="align-top text-brand-text">Use Line Item (adjust quantities, others 0) or Dollar Amount (Summary field); adjust shipping/discounts; choose method; notification choice; click Refund $[Amount]</td></tr></tbody></table></section><p class="text-xs text-brand-darkMuted">Information not listed here is not available in the current Natural Living Now Knowledge Base.</p></div>
+<div v-if="currentTab === 'crm-guides'" class="space-y-6"><div><h2 class="text-2xl font-heading font-bold text-white">CRM Systems &amp; Note Templates</h2><p class="text-brand-muted mt-1">Source: Master Guide, Module 9. Notes appear in green text. "If it isn't in the notes, it didn't happen."</p></div><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Approved note templates</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Scenario</th><th class="text-left align-top">Template</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">STS accepted</td><td class="align-top text-brand-text">Logged Tier 1 STS Accepted: Customer [Name] called requesting cancellation due to slow progress. Educated on cellular saturation timeline. Customer accepted Tier 1 20% partial refund ($[Amount]). Kept products under No-Return Advantage. Retained customer.</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">RMA</td><td class="align-top text-brand-text">RMA Issued [RMA#]: Customer [Name] firmly declined all 2 STS retention tiers. Provided JetPack Ohio warehouse address. Stated rules: customer pays shipping, must include original invoice / order id, sealed / unopened bottles. Expected refund posting 7-14 days post-receipt.</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Order modification</td><td class="align-top text-brand-text">Order Modification: Updated shipping address to [City, State] within 24h administrative window. Verified order was unfulfilled prior to modification.</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Medical trigger</td><td class="align-top text-brand-text">MEDICAL TRIGGER: Customer reported [symptom]. Read Mandatory Medical Script verbatim. Advised immediate product cessation. Escalate to QA and Management immediately.</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Verification</td><td class="align-top text-brand-text">Verified 2/3 DPA points for account owner [Full Name]. Phone: [Phone]. Authorized to proceed with account updates.</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Void vs refund</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Action</th><th class="text-left align-top">Status</th><th class="text-left align-top">Timing</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Void</td><td class="align-top text-brand-text">Unsettled (Pending/Authorized)</td><td class="align-top text-brand-text">0-48 hours</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Refund</td><td class="align-top text-brand-text">Settled (Complete)</td><td class="align-top text-brand-text">7-14 business days</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Verbatim spiels</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Type</th><th class="text-left align-top">Script</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Opening</td><td class="align-top text-brand-text">Thank you for calling customer care / [Name of Product], this is [Agent Name]. How may I help you today?</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Closing</td><td class="align-top text-brand-text">Thank you again for calling [Azura Vital Balance / GI Revitalize / Joint Hero]! We truly appreciate your loyalty to our brand. Have a great day! (wait 5 seconds for the customer to disconnect first)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Outbound disclosure</td><td class="align-top text-brand-text">Please note that this call will be monitored and recorded for quality and assurance purposes.</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Voicemail</td><td class="align-top text-brand-text">Hi, this is [Agent Name] calling from [Product Name]. I just saw that you left us a voice message regarding [concern] and I am here to assist you. Please call us back at 1-(888) 632-2690 or email support@azuravitalbalance.com.</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">System error</td><td class="align-top text-brand-text">Unfortunately, the tool I need to access your account/process your request is currently unavailable. Our team is already working to resolve this, and we're expecting it to be back up shortly. Please call us back and we'll be more than happy to assist you.</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Hold (P-E-T-A)</td><td class="align-top text-brand-text">Permission, Explanation, Timeline (max 2 minutes), Acknowledge on return. Dead air under 10 seconds.</td></tr></tbody></table></section><p class="text-xs text-brand-darkMuted">Information not listed here is not available in the current Natural Living Now Knowledge Base.</p></div>
+<div v-if="currentTab === 'escalations'" class="space-y-6"><div><h2 class="text-2xl font-heading font-bold text-white">Escalation &amp; Compliance Center</h2><p class="text-brand-muted mt-1">Source: Master Guide, Flows 13-15 and Module 5.2.</p></div><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Escalation triggers</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Trigger</th><th class="text-left align-top">Agent action</th><th class="text-left align-top">Do not</th><th class="text-left align-top">Escalate to</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Medical: reaction, allergy, hospitalization, condition, pregnancy, under 18</td><td class="align-top text-brand-text">Stop sales and retention. Read the medical script verbatim, advise stopping the product and seeing a physician. 100% refund, no return. Flag "Medical Trigger"</td><td class="align-top text-brand-text">Give medical advice; call a symptom normal or "detox"; downplay</td><td class="align-top text-brand-text">QA and April/Jose</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Chargeback, BBB, Attorney General, lawsuit or social media threat</td><td class="align-top text-brand-text">Within 180 days: bypass all retention and returns. 100% refund of entire purchase history; customer keeps or discards bottles. Day 181+: SME or Manager approves any courtesy full refund</td><td class="align-top text-brand-text">Argue, negotiate, pitch STS, require returns</td><td class="align-top text-brand-text">April or Jose (dispute prevention)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Angry customer or supervisor request</td><td class="align-top text-brand-text">Apply E.A.R.S. Document and route in CRM escalations tab. Callback within 24 business hours</td><td class="align-top text-brand-text">Say a manager is unavailable; argue; interrupt</td><td class="align-top text-brand-text">SME Queue (Princes, aka Sam)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Lost package over 10 business days</td><td class="align-top text-brand-text">Reshipment request with full order details</td><td class="align-top text-brand-text">Tell customer to file a carrier claim</td><td class="align-top text-brand-text">Jesica Fraga</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">PCI / privacy breach</td><td class="align-top text-brand-text">Pause recording; last 4 only; City/State only; domain only</td><td class="align-top text-brand-text">Write card data in notes</td><td class="align-top text-brand-text">Escalation path not documented in source</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Mandatory medical script (verbatim)</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Script</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Our supplements are extremely safe; however, we mandate that you consult your physician before taking the product. Show them the label to ensure it aligns with your treatment. Please stop taking the product immediately. Please note: this product is strictly prohibited for those under 18, or women who are pregnant or nursing.</td></tr></tbody></table></section><p class="text-xs text-brand-darkMuted">Information not listed here is not available in the current Natural Living Now Knowledge Base.</p></div>
+<div v-if="currentTab === 'product-education'" class="space-y-6"><div><h2 class="text-2xl font-heading font-bold text-white">Product Education</h2><p class="text-brand-muted mt-1">Source: Master Guide Module 2 and Portfolio Catalog (Product Education, Discovery &amp; Cross-Sell Matrix). Use these explanations as written; never claim to cure, treat, diagnose or prevent.</p></div><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Approved explanations</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Product</th><th class="text-left align-top">One-sentence explanation</th><th class="text-left align-top">Analogy</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">DentiPro</td><td class="align-top text-brand-text">It feeds the good bacteria in your mouth to stop gum bleeding, firm your gums, and keep your breath fresh.</td><td class="align-top text-brand-text">Fertilizer and healthy seeds for an oral microbiome garden</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Lymph Savior</td><td class="align-top text-brand-text">It supports your body’s internal drainage system to clear trapped fluid and ease swelling in your legs and ankles.</td><td class="align-top text-brand-text">Unclogging and upgrading an internal fluid sump pump</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Blood Flow Pro</td><td class="align-top text-brand-text">It opens up your blood vessels to improve overall circulation and stop blood from pooling in your lower legs.</td><td class="align-top text-brand-text">Expanding a narrow garden hose into a wide channel</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Nerve Recovery Max</td><td class="align-top text-brand-text">It cleans and repairs your nerve pathways to calm tingling, burning, and numbness in your hands and feet.</td><td class="align-top text-brand-text">Cleaning corrosion off electrical wires and restoring wire coating</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Nerve Repair Enhancer</td><td class="align-top text-brand-text">It recharges the energy centers in your nerve cells to speed up deep nerve tissue repair.</td><td class="align-top text-brand-text">Plugging a high-powered battery pack into a cable repair crew</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Sciatica Pro+</td><td class="align-top text-brand-text">It breaks down inflammatory buildup around your lower back to ease sciatic nerve pressure and shooting leg pain.</td><td class="align-top text-brand-text">Clearing debris from under a door frame so a pinched wire lies flat</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Nerve NO2</td><td class="align-top text-brand-text">It widens micro blood vessels to deliver warm, oxygen-rich blood directly to cold, numb hands and feet.</td><td class="align-top text-brand-text">Turning up the valve to send warm water to the furthest radiator</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Vision Hero</td><td class="align-top text-brand-text">It acts like an internal blue-light filter to protect your eyes from screen fatigue, glare, and visual strain.</td><td class="align-top text-brand-text">Internal sunglasses and a blue-light protective screen filter</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Vision Vitamin D3 + K2</td><td class="align-top text-brand-text">It guides Vitamin D3 straight into your eye tissue to help nourish dry eyes and strengthen eye structure.</td><td class="align-top text-brand-text">A GPS driver delivering construction materials straight into wall structures</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">TestoTonic</td><td class="align-top text-brand-text">It neutralizes trapping proteins to free up your body’s natural testosterone for energy, stamina, and vitality.</td><td class="align-top text-brand-text">Removing a wheel lock from a high-performance sports car</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">GI Revitalize</td><td class="align-top text-brand-text">It feeds beneficial gut bacteria to soothe your digestion and stop gas, bloating, and irregularity.</td><td class="align-top text-brand-text">Supplying organic fertilizer so green grass crowds out lawn weeds</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Gut ACV Gummies</td><td class="align-top text-brand-text">They deliver Apple Cider Vinegar to support metabolic rate, control cravings, and aid digestion.</td><td class="align-top text-brand-text">Adding a natural spark plug to keep an engine burning fuel efficiently</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Joint Hero</td><td class="align-top text-brand-text">It lubricates and cushions your joints to stop grinding, reduce heat, and ease morning stiffness.</td><td class="align-top text-brand-text">Placing a gel cushion and smooth lubricant between squeaky hinges</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Cross-sell pairings</h3><p class="text-brand-muted text-sm mb-3">Turmeric alert: verify blood-thinner use before Nerve Recovery Max, Sciatica Pro+ or Joint Hero.</p><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Customer concern</th><th class="text-left align-top">Primary formula</th><th class="text-left align-top">Sister product</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Tingling, burning in hands or feet</td><td class="align-top text-brand-text">Nerve Recovery Max</td><td class="align-top text-brand-text">Nerve Repair Enhancer or Nerve NO2</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Radiating leg pain, lower back</td><td class="align-top text-brand-text">Sciatica Pro+</td><td class="align-top text-brand-text">Joint Hero or Nerve Repair Enhancer</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Cold, heavy, numb limbs</td><td class="align-top text-brand-text">Nerve NO2</td><td class="align-top text-brand-text">Nerve Recovery Max</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Chronic leg or ankle swelling</td><td class="align-top text-brand-text">Lymph Savior</td><td class="align-top text-brand-text">Blood Flow Pro</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Bleeding gums, bad breath</td><td class="align-top text-brand-text">DentiPro</td><td class="align-top text-brand-text">Lymph Savior (if facial puffiness)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Blurry vision, eye strain</td><td class="align-top text-brand-text">Vision Hero</td><td class="align-top text-brand-text">Vision Vitamin D3 + K2</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Bloating, gas, irregularity</td><td class="align-top text-brand-text">GI Revitalize</td><td class="align-top text-brand-text">Gut ACV Gummies</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Low energy (men)</td><td class="align-top text-brand-text">TestoTonic</td><td class="align-top text-brand-text">Blood Flow Pro or GI Revitalize</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Knee grinding, hip stiffness</td><td class="align-top text-brand-text">Joint Hero</td><td class="align-top text-brand-text">Sciatica Pro+ or Lymph Savior</td></tr></tbody></table></section><p class="text-xs text-brand-darkMuted">Information not listed here is not available in the current Natural Living Now Knowledge Base.</p></div>
+<div v-if="currentTab === 'calculators'" class="space-y-6">
+          <div class="bg-brand-card p-5 rounded-xl border border-custom">
+            <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-calculator text-brand-teal"></i> Agent Interactive Calculators &amp; Decision Tools
+            </h2>
+            <p class="text-xs text-brand-muted mt-1">
+              Live calculation tools to verify 180-Day MBG eligibility, retention discounts, and bottle duration.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 180-Day MBG Eligibility Calculator -->
+            <div class="bg-brand-card p-5 rounded-xl border border-custom space-y-4">
+              <h3 class="font-heading font-bold text-sm text-brand-teal flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day"></i> 180-Day MBG Day Calculator
+              </h3>
+              
+              <div class="space-y-3 text-xs">
+                <div>
+                  <label class="block text-brand-muted font-medium mb-1">Original Purchase Date:</label>
+                  <input type="date" v-model="calcDeliveryDate" class="w-full bg-[#131f33] text-white p-2 rounded border border-custom focus:outline-none focus:border-brand-teal">
+                </div>
+
+                <div v-if="calcMBGResult !== null" class="p-3 bg-[#121d2d] rounded border border-custom space-y-1">
+                  <div class="flex justify-between">
+                    <span class="text-brand-muted">Days Elapsed Since Purchase:</span>
+                    <strong class="text-white">{{ calcMBGResult.daysElapsed }} Days</strong><div class="text-xs text-brand-muted mt-2">{{ calcMBGResult.action }}</div><div class="text-[11px] text-brand-darkMuted mt-1">Source: {{ calcMBGResult.source }}</div>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-brand-muted">Eligibility Status:</span>
+                    <span :class="calcMBGResult.eligible ? 'text-brand-teal font-bold' : 'text-red-400 font-bold'">
+                      {{ calcMBGResult.zone }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Retention Discount Calculator -->
+            <div class="bg-brand-card p-5 rounded-xl border border-custom space-y-4">
+              <h3 class="font-heading font-bold text-sm text-brand-blue flex items-center gap-2">
+                <i class="fa-solid fa-percent"></i> Retention Partial Refund Calculator
+              </h3>
+              
+              <div class="space-y-3 text-xs">
+                <div>
+                  <label class="block text-brand-muted font-medium mb-1">Total Order Charge Amount ($ USD):</label>
+                  <input type="number" v-model.number="calcOrderTotal" placeholder="e.g. 149.85" class="w-full bg-[#131f33] text-white p-2 rounded border border-custom focus:outline-none focus:border-brand-teal">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="p-3 bg-[#121d2d] rounded border border-custom">
+                    <span class="text-brand-darkMuted block">20% Retention Offer:</span>
+                    <strong class="text-brand-teal text-sm">${{ (calcOrderTotal * 0.30).toFixed(2) }}</strong>
+                  </div>
+                  <div class="p-3 bg-[#121d2d] rounded border border-custom">
+                    <span class="text-brand-darkMuted block">50% Retention Offer:</span>
+                    <strong class="text-brand-tealBright text-sm">${{ (calcOrderTotal * 0.50).toFixed(2) }}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- 12. QA MONITORING VIEW -->
+        <!-- ===================================== -->
+        <div v-if="currentTab === 'qa-monitoring'" class="space-y-6">
+          <div class="bg-brand-card p-5 rounded-xl border border-custom">
+            <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-check text-brand-teal"></i> Inbound Call QA Monitoring Criteria
+            </h2>
+            <p class="text-xs text-brand-muted mt-1">
+              Quality assurance scorecards, compliance mandatory checks, and evaluation parameters.
+            </p>
+          </div>
+
+          <div class="bg-brand-card p-5 rounded-xl border border-custom space-y-4">
+            <h3 class="font-heading font-bold text-sm text-white">Interactive QA Scoring Sheet</h3>
+            
+            <div class="space-y-3 text-xs">
+              <div v-for="(qa, qIdx) in qaItems" :key="qIdx" class="p-3 bg-[#121d2d] border border-custom rounded flex items-center justify-between">
+                <div>
+                  <strong class="text-white block">{{ qa.category }}</strong>
+                  <span class="text-brand-muted">{{ qa.description }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-brand-teal font-bold">{{ qa.points }} Points</span>
+                  <input type="checkbox" v-model="qa.passed" class="w-4 h-4 accent-brand-teal rounded cursor-pointer">
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-[#0a1221] rounded border border-brand-teal/40 flex items-center justify-between">
+              <span class="text-sm font-bold text-white">Calculated Total QA Score:</span>
+              <span class="text-2xl font-heading font-extrabold text-brand-teal">{{ calculateQAScore() }} / 100</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- 13. TRAINING CENTER VIEW -->
+        <!-- ===================================== -->
+        <div v-if="currentTab === 'training'" class="space-y-6"><div><h2 class="text-2xl font-heading font-bold text-white">Training Resources</h2><p class="text-brand-muted mt-1">Source: Master Guide, Contents tab. The referenced files were not supplied, so their content is not available here.</p></div><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Referenced training materials</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Resource</th><th class="text-left align-top">Status</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Oltask - NLN Product Overview, Labels &amp; Cx Education Guide.pdf</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">NL PRODUCT EDUCATION SCRIPT GUIDE.pdf</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">NL-PRODUCT-EXPLANATION-GUIDE.pdf</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Natural Living Now Customer Support Product and SOP Quick Guide.pdf</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Natural Living Now Inbound Customer Support SOPs &amp; Decision-Tree Guide</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">NL CS SOP Audio / Video Explainer</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Natural_Living_Inbound_Support_Playbook.pdf</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">CheckOut Champ CRM Customer Service Tutorial</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Shopify refund tutorials (YouTube)</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Oltask Natural Living Now Inbound Customer Support Onboarding &amp; Training Manual</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">QA Form - IB Call Evaluation Form and Scoring Guidelines.pdf</td><td class="align-top text-brand-text">Referenced in source; file not supplied</td></tr></tbody></table></section><p class="text-xs text-brand-darkMuted">Information not listed here is not available in the current Natural Living Now Knowledge Base.</p></div>
+<div v-if="currentTab === 'glossary-faq'" class="space-y-6"><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Glossary</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Term</th><th class="text-left align-top">Meaning</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">DPA</td><td class="align-top text-brand-text">Data Protection verification: 2 points for owners, 3 for third parties (2/3-DPA)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">MBG</td><td class="align-top text-brand-text">Money-Back Guarantee, 180 days from original purchase</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">STS</td><td class="align-top text-brand-text">Save-the-Sale retention waterfall</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">RMA</td><td class="align-top text-brand-text">Return Merchandise Authorization</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">E.A.R.S.</td><td class="align-top text-brand-text">Empathy, Acknowledgment, Response, Solution</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">P-E-T-A</td><td class="align-top text-brand-text">Hold protocol: Permission, Explanation, Timeline, Acknowledge</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Void</td><td class="align-top text-brand-text">Cancel an unsettled (pending) transaction</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Refund</td><td class="align-top text-brand-text">Reverse a settled transaction</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Null Route</td><td class="align-top text-brand-text">GI Revitalize 210-day guarantee, no physical return</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">SME</td><td class="align-top text-brand-text">Subject matter expert escalation queue</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">LVM</td><td class="align-top text-brand-text">Leaving voicemail spiel</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">CC / KNK</td><td class="align-top text-brand-text">Checkout Champ / Konnektive CRM</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">AGEs</td><td class="align-top text-brand-text">"Nerve plaques" referenced in product education</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">SHBG</td><td class="align-top text-brand-text">Protein referenced in TestoTonic education</td></tr></tbody></table></section>
+          <div class="bg-brand-card p-5 rounded-xl border border-custom">
+            <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-circle-question text-brand-teal"></i> Operational Glossary &amp; Agent FAQs
+            </h2>
+            <p class="text-xs text-brand-muted mt-1">
+              Definitions of support acronyms, system codes, and quick answers to frequent customer queries.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="font-heading font-bold text-base text-white">Frequently Asked Questions</h3>
+            <div class="space-y-2">
+              <div v-for="(faq, fIdx) in faqs" :key="fIdx" class="bg-brand-card p-4 rounded-lg border border-custom">
+                <h4 class="font-bold text-sm text-brand-teal mb-1">{{ faq.q }}</h4>
+                <p class="text-xs text-brand-muted leading-relaxed">{{ faq.a }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- 15. CONTACT DIRECTORY VIEW -->
+        <!-- ===================================== -->
+        <div v-if="currentTab === 'directory'" class="space-y-6"><div><h2 class="text-2xl font-heading font-bold text-white">Contacts, Escalations &amp; Links</h2><p class="text-brand-muted mt-1">Source: Master Guide, Contents tab and Module 3. Links were not tested (no network access), so all are unverified.</p></div><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Brand directory</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Brand</th><th class="text-left align-top">Phone</th><th class="text-left align-top">Email</th><th class="text-left align-top">Hours (EST)</th><th class="text-left align-top">Escalation</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Azura Vital Balance</td><td class="align-top text-brand-text">(888) 632-2690</td><td class="align-top text-brand-text">support@azuravitalbalance.com</td><td class="align-top text-brand-text">Mon-Fri 9AM-7PM, Sat-Sun 9AM-4PM</td><td class="align-top text-brand-text">Jesica Fraga (Reshipment)</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Joint Hero</td><td class="align-top text-brand-text">(877) 513-3988</td><td class="align-top text-brand-text">support@getjointhero.com</td><td class="align-top text-brand-text">Same</td><td class="align-top text-brand-text">Jesica Fraga</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">GI Revitalize</td><td class="align-top text-brand-text">(844) 937-0210</td><td class="align-top text-brand-text">support@getgirevitalize.com</td><td class="align-top text-brand-text">Same</td><td class="align-top text-brand-text">Jesica Fraga</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Reshipments &amp; delays</td><td class="align-top text-brand-text">Internal chat</td><td class="align-top text-brand-text">N/A</td><td class="align-top text-brand-text">Mon-Fri 9AM-5PM</td><td class="align-top text-brand-text">Jesica Fraga</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Escalation contacts</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Who</th><th class="text-left align-top">For</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">Princes (aka Sam)</td><td class="align-top text-brand-text">SME queue: complaints and supervisor requests</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">April/Jose</td><td class="align-top text-brand-text">Medical triggers, chargebacks, legal threats</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Jesica Fraga</td><td class="align-top text-brand-text">Reshipments and lost packages</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">QA</td><td class="align-top text-brand-text">Medical triggers</td></tr></tbody></table></section><section class="bg-brand-card border-custom rounded-xl p-5 overflow-x-auto"><h3 class="font-heading font-bold text-white mb-3">Tracking and official sites (unverified)</h3><table class="w-full text-sm"><thead><tr><th class="text-left align-top">Name</th><th class="text-left align-top">Link</th></tr></thead><tbody><tr class="border-t border-custom"><td class="align-top text-brand-text">UPS tracking</td><td class="align-top text-brand-text">https://www.ups.com/track</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Parcels App</td><td class="align-top text-brand-text">https://parcelsapp.com/</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Asendia</td><td class="align-top text-brand-text">https://track.asendia.com/track</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">OSM Worldwide</td><td class="align-top text-brand-text">https://www.osmworldwide.com/tracking/</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Azura Vital Balance</td><td class="align-top text-brand-text">https://azuravitalbalance.com/</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Joint Hero</td><td class="align-top text-brand-text">https://getjointhero.com/</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">GI Revitalize</td><td class="align-top text-brand-text">https://getgirevitalize.com/</td></tr><tr class="border-t border-custom"><td class="align-top text-brand-text">Blood Flow Pro (third-party landing page)</td><td class="align-top text-brand-text">https://lymphhealthtips.com/up-2</td></tr></tbody></table></section><p class="text-xs text-brand-darkMuted">Information not listed here is not available in the current Natural Living Now Knowledge Base.</p></div>
+<div v-if="currentTab === 'favorites'" class="space-y-6">
+          <div class="bg-brand-card p-5 rounded-xl border border-custom">
+            <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-star text-brand-gold"></i> Saved Favorites &amp; Quick Access SOPs
+            </h2>
+            <p class="text-xs text-brand-muted mt-1">
+              Your bookmarked articles, scripts, and call workflows for rapid retrieval.
+            </p>
+          </div>
+
+          <div v-if="favorites.length === 0" class="text-center py-12 text-brand-darkMuted bg-brand-card rounded-xl border border-custom">
+            <i class="fa-solid fa-star-half-stroke text-4xl mb-3 text-brand-border"></i>
+            <p class="text-sm">No favorites saved yet.</p>
+            <p class="text-xs mt-1">Click the star icon on any Call Driver or SOP to bookmark it here.</p>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+
+  <!-- VUE APPLICATION LOGIC -->
+  <script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    createApp({
+      setup() {
+        const currentTab = ref('dashboard');
+        const showSearchModal = ref(false);
+        const globalQuery = ref('');
+        const searchCategory = ref('all');
+        const driverSearchQuery = ref('');
+        const productSearchQuery = ref('');
+        const activeCallDriver = ref(null);
+        const activeProduct = ref(null);
+        const favorites = ref([]);
+
+        // Toast Notification State
+        const toast = ref({
+          show: false,
+          message: ''
+        });
+
+        const showToast = (msg) => {
+          toast.value.message = msg;
+          toast.value.show = true;
+          setTimeout(() => {
+            toast.value.show = false;
+          }, 3000);
+        };
+
+        const copyText = (text) => {
+          navigator.clipboard.writeText(text);
+          showToast('Script copied to clipboard!');
+        };
+
+        // Navigation Helper
+        const navigateTo = (tab) => {
+          currentTab.value = tab;
+          showSearchModal.value = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        const navClass = (tab) => {
+          const isActive = currentTab.value === tab;
+          return [
+            'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all duration-200',
+            isActive 
+              ? 'bg-brand-teal text-slate-950 font-bold shadow-md glow-teal' 
+              : 'text-brand-muted hover:text-white hover:bg-brand-cardHover'
+          ];
+        };
+
+        // Data: Top 16 Call Drivers
+        const topCallDrivers = ref([{"id": 1, "title": "Universal Call Flow & Authentication (Flow 1)", "category": "Entry", "intent": "Every call: establish control, check CRM, authenticate before any request.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check account", "detail": "Search phone, email or Order ID in Konnektive. Confirm the account is not Blacklisted or DNC (hover the 'i' to see why)."}, {"title": "Identify caller", "detail": "Account owner or third party."}, {"title": "Probe", "detail": "Ask the 2/3-DPA verifiers."}, {"title": "Action", "detail": "Give the opening spiel, then verify."}, {"title": "Resolve", "detail": "If verified go to the intent flow. If failed, refuse account access and offer general product support only."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Verified Customer / Unauthorized Caller. Note: 'Verified 2/3 DPA points for account owner [Full Name]. Phone: [Phone]. Authorized to proceed with account updates.'"}], "script": "Thank you for calling customer care, this is [Agent Name]. How may I help you today?", "prohibited": "Never speak a full street address or full email. Confirm email domain only and City/State only. Never request, repeat or store full card number, CVV or expiry.", "escalation": "Third parties never get modifications or refunds without the owner's direct authorization."},
+{"id": 2, "title": "Ghost / Silent Call (Flow 2)", "category": "Entry", "intent": "Dead air, static or silent line.", "authRequired": false, "authRule": "No authentication (no account access).", "steps": [{"title": "Check", "detail": "Hardware mute and RingCentral line active."}, {"title": "Attempt 1 (0-3s)", "detail": "'Hi, thank you for calling customer care. This is [Agent Name], how can I help you?'"}, {"title": "Attempt 2 (4-6s)", "detail": "'Hello? Can you hear me?'"}, {"title": "Attempt 3 (7-9s)", "detail": "'If I do not receive an answer within 10 seconds I will disconnect the call.'"}, {"title": "Final (10s+)", "detail": "Read the disconnect spiel, then disconnect."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Ghost Call / Silent Line. Note: 'Silent call. Followed 3-attempt Ghost Call protocol. Played Ghost Spiel. Disconnected.'"}], "script": "Since I did not receive any response, I am now disconnecting the call. Please call us back at 1-(888) 632-2690 or email us at support@azuravitalbalance.com so we can assist you. Have a great day and goodbye for now.", "prohibited": "Do not hang up before all three attempts and the full spiel. Premature disconnect = Call Avoidance, 0 points.", "escalation": "None. Disconnect after the final script."},
+{"id": 3, "title": "General Wellness & Timeline Education (Flow 3)", "category": "Product", "intent": "Existing user with slow progress, or prospect asking about a product.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Account history: products purchased and exact order dates."}, {"title": "Probe", "detail": "'How long have you felt that burning or numbness, and is it worse at night?' or 'How often do you feel bloated or experience discomfort after a standard meal?'"}, {"title": "Educate", "detail": "Natural botanical nutrients need 4 to 8 weeks to reach cellular saturation."}, {"title": "Turmeric alert", "detail": "Before recommending Nerve Recovery Max, Sciatica Pro+ or Joint Hero, verify blood-thinner use (e.g., Warfarin). If yes, suggest a non-turmeric option such as Nerve NO2 or Nerve Repair Enhancer."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: General Inquiry / Product Guidance. Note: 'Customer inquired about slow progress. Educated on the 4-8 week cellular saturation timeline. Verified no blood thinners on file. Encouraged hydration and consistency.'"}], "script": "Think of your mouth like a garden: DentiPro plants healthy probiotic seeds and provides prebiotic fiber fertilizer so good bacteria thrive and crowd out the weeds.", "prohibited": "Never say a supplement cures, treats, prevents or diagnoses. Never advise stopping prescription medication.", "escalation": "If the customer wants additions, follow the cross-sell handoff (Flow 4)."},
+{"id": 4, "title": "Purchase Assistance / Revenue Retrieval (Flow 4)", "category": "Sales Handoff", "intent": "Buyer with checkout friction, declined payment, or a new phone order.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Incomplete checkouts, declines or abandoned carts by phone or email."}, {"title": "Probe", "detail": "'Are you calling to track an existing shipment, or are we looking to start your comprehensive wellness protocol today?'"}, {"title": "Action", "detail": "Identify gaps in the product stack (e.g., Joint Hero owner may need Sciatica Pro+). Present bundle pricing."}, {"title": "Resolve", "detail": "Warm transfer to Outbound Sales with the correct tag."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Inbound Sales Handoff / Order Staged. Note: 'Identified purchase interest. Gaps identified: [..]. Executed warm transfer to Outbound Sales.'"}], "script": "Are you calling to track an existing shipment, or are we looking to start your comprehensive wellness protocol today?", "prohibited": "Do not process single-bottle orders without presenting bundle economics first. Never process cards outside a PCI-compliant gateway. SOURCE CONFLICT: bundle prices differ between catalogs; confirm before quoting.", "escalation": "Warm transfer to Outbound Sales once payment is ready."},
+{"id": 5, "title": "Shipping, Tracking & Fulfillment Status (Flow 5)", "category": "Shipping", "intent": "Customer wants the status of a completed order.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Order status in CheckoutChamp (Hold, Pending, Shipped, Delivered) and tracking number."}, {"title": "Probe", "detail": "'May I have your Order ID or the email associated with your purchase?'"}, {"title": "Action", "detail": "Pull tracking from UPS. Domestic orders ship in 3 to 7 business days, UPS Expedited from JetPack Shipping, Tallmadge, OH."}, {"title": "Resolve", "detail": "Give the tracking link. Over 10 business days in transit: escalate to Reshipment (Flow 12)."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Tracking & Delivery Update. Note: 'Provided UPS Tracking [#]. Explained 3-7 day domestic delivery window.'"}], "script": "Your order was freshly bottled and dispatched from our Ohio fulfillment facility. It is currently in transit via UPS Expedited. It is estimated to arrive at your door within 3 to 7 business days. Here is your tracking number: [Tracking ID].", "prohibited": "Do not give arbitrary delivery dates. Never say it shipped unless a valid carrier tracking scan is active.", "escalation": "Transit over 10 business days: Reshipment flow."},
+{"id": 6, "title": "48-Hour Order Modification Window (Flow 6)", "category": "Orders", "intent": "Change address, product or quantity.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Order creation timestamp in CheckoutChamp."}, {"title": "Green 0-24h", "detail": "Hold shipping, click the Pencil Icon, edit address/product/quantity, save, release hold."}, {"title": "Amber 24-48h", "detail": "Check fulfillment status. If Hold or Pending, halt and edit immediately."}, {"title": "Red 48h+/Shipped", "detail": "Locked. Give the REFUSED script."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Order Modification Applied / Modification Rejected (Locked in Transit)."}], "script": "Your order has already left our Ohio production facility. Because it is in transit, the labels are locked and cannot be edited. However, once the box arrives, simply write 'REFUSED' on the unopened package and return it to the carrier. The post office will return it to us at no charge, and we can process your return immediately.", "prohibited": "Never modify an order marked Shipped or with a UPS scan. Never apply bulk pricing retroactively to shipped single bottles.", "escalation": "Standard return instructions if the window is closed."},
+{"id": 7, "title": "180-Day MBG Timeline Triage (Flow 7)", "category": "MBG", "intent": "Cancellation or refund request; decide the window first.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Calendar days between ORIGINAL PURCHASE DATE and today."}, {"title": "Days 0-176", "detail": "Full STS waterfall (Tier 1 then Tier 2)."}, {"title": "Days 177-180", "detail": "Brief STS attempt; if declined or any friction, process RMA immediately."}, {"title": "Days 181-209", "detail": "Outside MBG. No STS. Deny the full refund. If a chargeback is threatened, notify SME or Manager and get approval for a courtesy full refund. Do not confirm a refund to the customer before approval."}, {"title": "Days 210+", "detail": "Deny gracefully. If a chargeback is threatened, notify and escalate to SME or Manager: a full refund may be granted, subject to approval. Do not confirm a refund to the customer before escalation."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: MBG Triage Completed. Note: 'MBG Triage calculated: Day [X] post-purchase. Proceeded with [..].'"}], "script": "Our comprehensive safety net has concluded, but we want to continue supporting your health.", "prohibited": "Never deny a refund inside 180 days. Never pitch retention to a customer showing chargeback signs, frustration or irritation.", "escalation": "Chargeback threat: Flow 15."},
+{"id": 8, "title": "Cancellation & Refund Processing (Flow 8)", "category": "Refunds", "intent": "Authenticated customer wants to cancel or get a refund.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Transaction status: Pending/Authorized or Settled/Complete."}, {"title": "Probe", "detail": "'Has your package already arrived, or are you calling to cancel a pending shipment?'"}, {"title": "Unsettled", "detail": "Process a VOID: hold released in 0-48 hours."}, {"title": "Settled", "detail": "Process a REFUND: posts in 7-14 business days."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Cancellation Processed / Refund Issued. Note: 'Processed [Void/Full/Partial] of $[Amount]. Transaction ID: [ID]. Timeline [..].'"}], "script": "Has your package already arrived, or are you calling to cancel a pending shipment?", "prohibited": "Partial voids are not supported. For a partial change on a pending charge, void the entire order and reprocess.", "escalation": "Follow MBG triage first for refund requests."},
+{"id": 9, "title": "Save-the-Sale Retention Waterfall (Flow 9)", "category": "STS", "intent": "Cancel or return because of slow progress, budget, or stopping use.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Purchase date within 180 days; notes show no prior STS accepted."}, {"title": "Tier 1", "detail": "20% partial refund plus timeline education. Keep all bottles."}, {"title": "Tier 2", "detail": "50% partial refund. Keep all bottles."}, {"title": "Accepted", "detail": "Process the partial refund in CheckoutChamp."}, {"title": "Declined both", "detail": "Go to RMA (Flow 10)."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Save the Sale Saved / Sale Churned. Tier 3 (free courtesy bottle) is APPROVAL PENDING: DO NOT OFFER."}], "script": "I completely understand, [Customer Name]. Natural nutrients take 4 to 8 weeks to fully saturate the system. To help you give your body enough time without financial stress, I can issue an immediate 20% refund right now. You keep all your bottles, no post office trip, and continue seeing how your body responds. How does that sound?", "prohibited": "Never skip to 50% before pitching 20% and education. Never require bottle return after an accepted tier.", "escalation": "Chargeback, legal or medical trigger: bypass STS."},
+{"id": 10, "title": "Returns & RMA Issuance (Flow 10)", "category": "Returns", "intent": "Customer refuses STS and wants a 100% refund.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Within 180 days and both STS tiers were presented and declined."}, {"title": "Confirm", "detail": "'You will be responsible for returning the bottles to our facility, ok?'"}, {"title": "Provide", "detail": "JetPack Shipping Returns, 285 Northeast Ave, Tallmadge, OH 44278. Customer pays postage, includes invoice/Order ID, sealed/unopened bottles. Refund posts 7-14 business days after receipt."}, {"title": "International", "detail": "3 bottles or fewer: refund immediately without return. More than 3: standard return."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Standard Return (RMA) Processed. Note: 'RMA Issued [RMA#]...'"}], "script": "I will set up your Return Merchandise Authorization (RMA). Just to confirm, you will be responsible for returning the bottles to our facility, ok?", "prohibited": "No restocking fee. No prepaid label. Never send returns to the Sheridan, WY address (admin mail only).", "escalation": "None documented."},
+{"id": 11, "title": "Damaged, Missing or Incorrect Shipment (Flow 11)", "category": "Shipping", "intent": "Damaged, leaking, missing or wrong items.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Original order contents, delivery date, warehouse packing records."}, {"title": "Probe", "detail": "How many bottles are affected or which items were missing?"}, {"title": "Action", "detail": "Process a free replacement order in CheckoutChamp at $0.00. No return."}, {"title": "If customer rejects replacement", "detail": "Issue an immediate full refund."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Replacement Order Processed. Log as 'Damaged in Transit'. No return required."}], "script": "I am deeply sorry that your package arrived in this condition. Please discard the damaged items safely. I have processed an immediate, free replacement order for [Product Name] to be rushed out to your address today. You will receive a new tracking link via email as soon as it leaves our facility.", "prohibited": "Never require return postage or mailing back leaking or broken items.", "escalation": "Highly upset customer: full refund."},
+{"id": 12, "title": "Lost vs. Delivered-Not-Received (Flow 12)", "category": "Shipping", "intent": "Package stalled or marked Delivered but not found.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Tracking history: Delivered, or stalled."}, {"title": "A: Lost", "detail": "In transit over 10 business days with no movement: submit reshipment request to Jesica Fraga via CRM ticket."}, {"title": "B: Delivered", "detail": "Ask about family, neighbors, carrier drop box. Wait 24 hours; if still missing, process free replacement ('Missing in Transit')."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Shipping Delay Reshipped / Missing Delivery Resolved. Include Replacement ID."}], "script": "Have you had a chance to check with family members, nearby neighbors, or your local postal carrier to see if it was placed in a secure drop box?", "prohibited": "Do not refuse a replacement when tracking says Delivered. Never tell the customer to file a carrier claim.", "escalation": "Route to Jesica Fraga (Reshipment Specialist)."},
+{"id": 13, "title": "Customer Complaints & Escalations (Flow 13)", "category": "Escalation", "intent": "Irate customer or a supervisor request.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Prior account notes."}, {"title": "Probe", "detail": "'What specific concern has not been addressed so I can compile the details?'"}, {"title": "Action", "detail": "Apply E.A.R.S. (Empathy, Acknowledgment, Response, Solution)."}, {"title": "Escalate", "detail": "Route to SME Queue (Princes, aka Sam) in the CRM escalations tab."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Escalated to SME / Supervisor Callback Requested."}], "script": "I completely understand your frustration, and your concerns are very important to us. I am going to document your file immediately and escalate your account directly to our Supervisor. Princes/Sam will review your case today and reach out to you within 24 business hours to ensure this is resolved to your satisfaction.", "prohibited": "Never say a manager is unavailable or refuse to escalate. Never argue or interrupt.", "escalation": "SME Queue: Princes (aka Sam)."},
+{"id": 14, "title": "Medical Triggers & Adverse Events (Flow 14)", "category": "Compliance", "intent": "Reaction, allergy, hospitalization, condition, pregnancy, or under 18.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Stop", "detail": "Halt all sales, retention and troubleshooting."}, {"title": "Probe", "detail": "Clarifying safety questions only; no symptom probing or diagnosis."}, {"title": "Read", "detail": "The mandatory medical script verbatim."}, {"title": "Resolve", "detail": "Bypass return rules; issue 100% refund; flag 'Medical Trigger'."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Medical Trigger / Immediate Safety Refund. Escalate to QA and April/Jose."}], "script": "Our supplements are extremely safe; however, we mandate that you consult your physician before taking the product. Show them the label to ensure it aligns with your treatment. Please stop taking the product immediately. Please note: this product is strictly prohibited for those under 18, or women who are pregnant or nursing.", "prohibited": "Never give medical advice. Never call a symptom normal or 'detox'. Never downplay.", "escalation": "QA and April/Jose immediately."},
+{"id": 15, "title": "Chargeback, Legal & Social Media Threats (Flow 15)", "category": "Compliance", "intent": "Threat of chargeback, BBB, Attorney General, bad review or lawsuit.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "Locate the charge in CheckoutChamp."}, {"title": "Bypass", "detail": "Skip all retention and return requirements."}, {"title": "Refund", "detail": "Immediate 100% refund of entire purchase history; tell the customer to keep or discard bottles."}, {"title": "Escalate", "detail": "Flag account; escalate to April or Jose."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Legal & Dispute Prevention Bypass Refund."}], "script": "I want to make this completely right for you today without any hassle. I have bypassed our standard return policy and processed an immediate 100% full refund of your purchase back to your card. There is absolutely no need to return your bottles. You will see the funds post to your statement within 7 to 14 business days. No further action is required on your part.", "prohibited": "Never argue, negotiate or pitch STS. Never require bottle return.", "escalation": "April or Jose for dispute prevention monitoring. Applies within 180 days only. Days 181+: no STS, deny the refund; if a chargeback is threatened, notify SME or Manager and get approval for a courtesy full refund. Do not confirm a refund to the customer before approval."},
+{"id": 16, "title": "PCI DSS & Privacy Redlines (Flow 16)", "category": "Compliance", "intent": "Any call where card or personal data is updated or discussed.", "authRequired": true, "authRule": "Owner: registered first and last name PLUS one of email, Order ID, zip code or phone. Third party: caller name, relationship, owner's full name PLUS two of last 4 of card, shipping City/State, email domain, phone/Order ID (status updates only).", "steps": [{"title": "Check", "detail": "RingCentral call recording controls are active."}, {"title": "Cards", "detail": "If the customer reads card details, pause recording immediately. Speak last 4 digits only."}, {"title": "Address", "detail": "City and State only."}, {"title": "Email", "detail": "Domain only."}, {"title": "CRM", "detail": "Add green-text note in CheckoutChamp/Konnektive. Disposition: Profile Security Update Completed. Note: 'Followed PCI DSS guidelines. Address confirmed via City/State only. Card verified via last 4 only.'"}], "script": "Confirm last 4 digits only, City and State only, and email domain only.", "prohibited": "Never write card details in CRM notes. Reading back a full card number can mean immediate termination.", "escalation": "Report any breach to management."}]);
+
+        const filteredCallDrivers = computed(() => {
+          if (!driverSearchQuery.value) return topCallDrivers.value;
+          const q = driverSearchQuery.value.toLowerCase();
+          return topCallDrivers.value.filter(d => 
+            d.title.toLowerCase().includes(q) || 
+            d.intent.toLowerCase().includes(q) ||
+            d.category.toLowerCase().includes(q)
+          );
+        });
+
+        const openCallDriver = (driver) => {
+          activeCallDriver.value = driver;
+        };
+
+        // Data: Products
+        const products = ref([{"id": 1, "name": "DentiPro", "category": "Oral & Microbiome", "price": 69, "size": "30 tablets | Packages: 1 bottle $69, 3 bottles $177, 6 bottles $294, 12 bottles $408", "dosage": "1 tablet daily with 6-8 oz water, 20-30 min before a meal", "directions": "1 tablet daily with 6-8 oz water, 20-30 min before a meal", "purpose": "Feeds good oral bacteria to help stop gum bleeding, firm gums and freshen breath.", "ingredients": ["Inulin Powder (100mg)", "Probiotic Blend (40mg / 3.5B CFU: L. paracasei, L. reuteri, B. lactis, L. salivarius)"], "warnings": "Contains Milk. Prohibited for under 18, pregnant, or nursing. ", "companion": "Source catalog cross-sells Lymph Savior if facial puffiness present."},
+{"id": 2, "name": "Lymph Savior", "category": "Lymphatic & Edema", "price": 69, "size": "60 capsules | Packages: 1 bottle $69, 3 bottles $177, 6 bottles $294, 12 bottles $408", "dosage": "2 capsules daily in the morning with 6-8 oz water", "directions": "2 capsules daily in the morning with 6-8 oz water", "purpose": "Supports the body's drainage system to ease trapped fluid and leg/ankle swelling.", "ingredients": ["Horse Chestnut (200mg)", "Red Clover (225mcg per Overview; 225mg per Biology tab)", "Red Root (210mg)", "Centella asiatica (125mg)", "Burdock (100mg)"], "warnings": "Prohibited for under 18, pregnant, or nursing.", "companion": "Pairs with Blood Flow Pro."},
+{"id": 3, "name": "Blood Flow Pro", "category": "Circulation & NO2", "price": 59, "size": "60 capsules | Packages: 1 bottle $59, 3 bottles $129, 6 bottles $179, 12 bottles $408", "dosage": "2 capsules daily with breakfast and water", "directions": "2 capsules daily with breakfast and water", "purpose": "Nitric Oxide support to open blood vessels and help stop blood pooling in lower legs.", "ingredients": ["L-Citrulline DL-Malate (400mg)", "L-Arginine HCl (350mg)", "AAKG (50mg)"], "warnings": "Prohibited for under 18, pregnant, or nursing.", "companion": "Companion to Lymph Savior."},
+{"id": 4, "name": "Nerve Recovery Max / Nerve Savior", "category": "Nerve Health (Core)", "price": 69, "size": "60 capsules | Packages: 1 bottle $69, 3 bottles $177, 6 bottles $294, 12 bottles $408", "dosage": "2 capsules daily, 20-30 min before a meal with water", "directions": "2 capsules daily, 20-30 min before a meal with water", "purpose": "Foundational nerve support for tingling, burning and numbness in hands and feet.", "ingredients": ["Alpha Lipoic Acid (400mg)", "Benfotiamine (150mg)", "B vitamins", "Turmeric", "Ashwagandha"], "warnings": "Not allowed for pregnant or nursing women. CRITICAL TURMERIC WARNING: verify blood-thinner use (e.g., Warfarin) before recommending. Do not take with Warfarin. SOURCE CONFLICT — REVIEW REQUIRED: turmeric amount and B-vitamin list differ between source tabs.", "companion": "Companions: Nerve Repair Enhancer, Nerve NO2."},
+{"id": 5, "name": "Nerve Repair Enhancer", "category": "Nerve Health (Mito)", "price": 69, "size": "30 capsules | Packages: 1 bottle $69, 3 bottles $117, 6 bottles $234, 12 bottles $408", "dosage": "1 capsule daily alongside Nerve Savior", "directions": "1 capsule daily alongside Nerve Savior", "purpose": "Companion formula that supports energy centers in nerve cells for deep nerve tissue repair.", "ingredients": ["R-Alpha Lipoic Acid (200mg)"], "warnings": "Prohibited for under 18, pregnant, or nursing.", "companion": "Companion to Nerve Savior. Non-turmeric alternative for blood-thinner users."},
+{"id": 6, "name": "Sciatica Pro+", "category": "Sciatica & Back Pain", "price": 69, "size": "60 capsules | Packages: 1 bottle $69, 3 bottles $177, 6 bottles $294, 12 bottles $408", "dosage": "Start 2 capsules daily; may increase to 4 daily after 2 weeks", "directions": "Start 2 capsules daily; may increase to 4 daily after 2 weeks", "purpose": "Eases inflammatory buildup around the lower back to help with sciatic nerve pressure and shooting leg pain.", "ingredients": ["Devil's Claw", "Boswellia", "White Willow Bark", "Curcumin (Turmeric)", "Alpha Lipoic Acid"], "warnings": "Not allowed for pregnant or nursing women. CRITICAL TURMERIC WARNING: verify blood-thinner use (e.g., Warfarin) before recommending. SOURCE CONFLICT — REVIEW REQUIRED: ingredient lists differ (Benfotiamine appears in one source only).", "companion": "Joint Hero or Nerve Repair Enhancer."},
+{"id": 7, "name": "Nerve NO2", "category": "Nerve Oxygenation", "price": 59.95, "size": "60 capsules | Packages: 1 bottle $59.95, 3 bottles $99, 6 bottles $198, 12 bottles $408", "dosage": "2 capsules daily with water", "directions": "2 capsules daily with water", "purpose": "Widens micro blood vessels to deliver warm blood to cold, numb hands and feet.", "ingredients": ["L-Citrulline DL-Malate (400mg)", "L-Arginine HCl (350mg)", "AAKG (50mg)", "Ginkgo Biloba"], "warnings": "Prohibited for under 18, pregnant, or nursing.", "companion": "Pairs with Nerve Recovery Max."},
+{"id": 8, "name": "Vision Hero", "category": "Sensory & Vision", "price": 69, "size": "60 capsules | Packages: 1 bottle $69, 3 bottles $177, 6 bottles $294, 12 bottles $408", "dosage": "1 capsule twice daily, 20-30 min before meals", "directions": "1 capsule twice daily, 20-30 min before meals", "purpose": "Acts like an internal blue-light filter against screen fatigue, glare and visual strain.", "ingredients": ["Quercetin", "Lutein", "Zeaxanthin", "Bilberry", "Eyebright", "Vitamins A, C, E", "Zinc"], "warnings": "Prohibited for under 18, pregnant, or nursing.", "companion": "Companion: Vision Vitamin D3 + K2."},
+{"id": 9, "name": "Vision Vitamin D3 + K2", "category": "Sensory & Vision", "price": 39, "size": "60 capsules | Packages: 1 bottle $39, 3 bottles $99, 6 bottles $198, 12 bottles $408", "dosage": "1 capsule daily with water", "directions": "1 capsule daily with water", "purpose": "Guides Vitamin D3 into eye tissue to help nourish dry eyes and support eye structure.", "ingredients": ["Vitamin D3 (125mcg / 5000 IU)", "Vitamin K2 (100mcg)", "Calcium (210mg)", "BioPerine (5mg)"], "warnings": "Not allowed for pregnant or nursing women. Companion formula to Vision Hero.", "companion": "Companion to Vision Hero."},
+{"id": 10, "name": "TestoTonic", "category": "Men's Hormonal Health", "price": 69, "size": "4.23 oz powder (30 servings) | Packages: 1 bottle $69, 3 bottles $177, 6 bottles $294, 12 bottles $408", "dosage": "1 scoop daily in 6-8 oz cold water", "directions": "1 scoop daily in 6-8 oz cold water", "purpose": "Supports free testosterone for energy, stamina and vitality (adult men).", "ingredients": ["Shilajit Extract", "Bitter Melon", "Beet Root Powder", "Grape Seed Extract", "9-Strain Probiotic (3.2B CFU)"], "warnings": "Not allowed for pregnant or nursing women. For adult men. Prohibited for under 18.", "companion": "Blood Flow Pro or GI Revitalize."},
+{"id": 11, "name": "GI Revitalize", "category": "Digestive & Gut Health", "price": 69, "size": "60 capsules | Packages: 1 bottle $69, 3 bottles $177, 6 bottles $294, 12 bottles $408", "dosage": "2 capsules daily, 20-30 min before meals with 8 oz water (Portfolio: with food or pre-meal)", "directions": "2 capsules daily, 20-30 min before meals with 8 oz water (Portfolio: with food or pre-meal)", "purpose": "Feeds beneficial gut bacteria to soothe digestion and help with gas, bloating and irregularity.", "ingredients": ["Proprietary Blend 800mg: Acacia Gum, Agave Inulin, Flaxseed, Galacto-Oligosaccharides, Guar Gum"], "warnings": "Not allowed for pregnant or nursing women. Special 210-day Null Route guarantee (no physical return).", "companion": "Companion: Gut ACV Gummies."},
+{"id": 12, "name": "Gut ACV Gummies", "category": "Metabolic Companion", "price": 39, "size": "30 gummies | Packages: 1 bottle $39, 3 bottles $99, 6 bottles $198, 12 bottles $408", "dosage": "1-2 gummies daily (refer to label)", "directions": "1-2 gummies daily (refer to label)", "purpose": "Apple Cider Vinegar to support metabolic rate, cravings and digestion.", "ingredients": ["Apple Cider Vinegar"], "warnings": "Not allowed for pregnant or nursing women.", "companion": "Companion to GI Revitalize."},
+{"id": 13, "name": "Joint Hero", "category": "Joint Mobility", "price": 69, "size": "60 capsules | Packages: 1 bottle $69, 3 bottles $177, 6 bottles $294, 12 bottles $408", "dosage": "2 capsules daily with 6-8 oz water", "directions": "2 capsules daily with 6-8 oz water", "purpose": "Lubricates and cushions joints to ease grinding, heat and morning stiffness.", "ingredients": ["MSM (300mg)", "GlucosaGreen glucosamine (200mg)", "Turmeric Root (200mg)", "White Willow Bark (150mg)", "Boswellia (100mg)", "Hyaluronic Acid (10mg)"], "warnings": "Not allowed for pregnant or nursing women. CRITICAL TURMERIC WARNING: verify blood-thinner use (e.g., Warfarin) before recommending.", "companion": "Sciatica Pro+ or Lymph Savior."}]);
+
+        const filteredProducts = computed(() => {
+          if (!productSearchQuery.value) return products.value;
+          const q = productSearchQuery.value.toLowerCase();
+          return products.value.filter(p => 
+            p.name.toLowerCase().includes(q) || 
+            p.purpose.toLowerCase().includes(q) ||
+            p.category.toLowerCase().includes(q) ||
+            p.ingredients.some(i => i.toLowerCase().includes(q))
+          );
+        });
+
+        const openProductModal = (prod) => {
+          activeProduct.value = prod;
+        };
+
+        // Decision Tree Nodes
+        const decisionTreeNodes = ref([{"step": 1, "title": "Open & Check Account", "icon": "fa-solid fa-headset", "question": "Is the line silent, and is the account clear?", "description": "Search phone, email or Order ID in Konnektive. Check for Blacklisted or DNC flags.", "options": [{"label": "Caller is speaking", "subtext": "Continue", "targetNode": 2}, {"label": "Silent line", "subtext": "Ghost Call protocol", "targetNode": 16}], "script": "Thank you for calling customer care, this is [Agent Name]. How may I help you today?"},
+{"step": 2, "title": "Authenticate (2/3-DPA)", "icon": "fa-solid fa-shield-halved", "question": "Did the caller pass verification?", "description": "Owner: name + 1 of email, Order ID, zip, phone. Third party: caller name, relationship, owner's name + 2 of last 4 card, City/State, email domain, phone/Order ID.", "options": [{"label": "Verified", "subtext": "Log in green text", "targetNode": 3}, {"label": "Failed", "subtext": "Refuse account access", "targetNode": 17}]},
+{"step": 3, "title": "Identify Intent", "icon": "fa-solid fa-magnifying-glass", "question": "What does the customer need?", "description": "Pick the call driver. Safety and legal triggers come first.", "options": [{"label": "Medical: reaction, pregnancy, under 18", "subtext": "Flow 14", "targetNode": 11}, {"label": "Chargeback / BBB / lawsuit threat", "subtext": "Flow 15", "targetNode": 12}, {"label": "Cancel, refund or return", "subtext": "Flow 7 triage", "targetNode": 4}, {"label": "Tracking or status", "subtext": "Flow 5", "targetNode": 8}, {"label": "Change address or items", "subtext": "Flow 6", "targetNode": 9}, {"label": "Damaged, missing, lost", "subtext": "Flows 11-12", "targetNode": 10}, {"label": "Product or wellness question", "subtext": "Flow 3", "targetNode": 13}, {"label": "Angry or wants supervisor", "subtext": "Flow 13", "targetNode": 14}]},
+{"step": 4, "title": "MBG Triage", "icon": "fa-solid fa-calendar-days", "question": "How many days since ORIGINAL PURCHASE?", "description": "Use the MBG calculator. Chargeback or frustration signs bypass retention.", "options": [{"label": "Days 0-176", "subtext": "STS Tier 1", "targetNode": 5}, {"label": "Days 177-180", "subtext": "Brief STS; RMA if declined", "targetNode": 5}, {"label": "Days 181+", "subtext": "Out of policy", "targetNode": 15}, {"label": "Chargeback threat", "subtext": "Bypass all retention", "targetNode": 12}]},
+{"step": 5, "title": "STS Tier 1: 20% Refund", "icon": "fa-solid fa-hand-holding-dollar", "question": "Does the customer accept 20%?", "description": "Educate on the 4 to 6 week timeline. Keep all bottles.", "options": [{"label": "Accepted", "subtext": "Process 20% partial refund", "targetNode": 18}, {"label": "Declined", "subtext": "Go to Tier 2", "targetNode": 6}], "script": "I completely understand, [Customer Name]. Natural nutrients take 4 to 8 weeks to fully saturate the system. To help you give your body enough time without financial stress, I can issue an immediate 20% refund right now. You keep all your bottles, no post office trip, and continue seeing how your body responds. How does that sound?"},
+{"step": 6, "title": "STS Tier 2: 50% Refund", "icon": "fa-solid fa-percent", "question": "Does the customer accept 50%?", "description": "Tier 3 free bottle is approval pending: do not offer.", "options": [{"label": "Accepted", "subtext": "Process 50% partial refund", "targetNode": 18}, {"label": "Declined", "subtext": "Issue RMA", "targetNode": 7}], "script": "I hear you, [Customer Name], and your satisfaction is our top priority. Before we set up a return where you'd have to pay to mail bottles back, let me do this: I can issue a 50% refund for your entire order right now. You keep all your bottles, get your full protocol at half price, and continue risk-free with zero return hassle. Would that work better?"},
+{"step": 7, "title": "RMA / Return", "icon": "fa-solid fa-box-open", "question": "Has the customer confirmed return responsibility?", "description": "Address: JetPack Shipping Returns, 285 Northeast Ave, Tallmadge, OH 44278. Customer pays postage, includes invoice, sealed bottles. No restocking fee, no prepaid label. International 3 bottles or fewer: refund without return.", "options": [{"label": "RMA issued", "subtext": "Document", "targetNode": 18}], "script": "I will set up your Return Merchandise Authorization (RMA). Just to confirm, you will be responsible for returning the bottles to our facility, ok?"},
+{"step": 8, "title": "Tracking & Status", "icon": "fa-solid fa-truck-fast", "question": "Is transit over 10 business days?", "description": "Pull UPS tracking. Domestic: 3 to 7 business days via UPS Expedited from Tallmadge, OH.", "options": [{"label": "Within window", "subtext": "Give tracking", "targetNode": 18}, {"label": "Over 10 business days", "subtext": "Lost flow", "targetNode": 10}]},
+{"step": 9, "title": "Order Modification Zone", "icon": "fa-solid fa-pen-to-square", "question": "Which zone is the order in?", "description": "Green 0-24h: edit with Pencil Icon. Amber 24-48h: edit only if Hold or Pending. Red 48h+ or Shipped: locked.", "options": [{"label": "Green or Amber (unfulfilled)", "subtext": "Edit and document", "targetNode": 18}, {"label": "Red or Shipped", "subtext": "REFUSED script", "targetNode": 18}], "script": "Your order has already left our Ohio production facility. Because it is in transit, the labels are locked and cannot be edited. However, once the box arrives, simply write 'REFUSED' on the unopened package and return it to the carrier. The post office will return it to us at no charge, and we can process your return immediately."},
+{"step": 10, "title": "Damaged, Missing or Lost", "icon": "fa-solid fa-triangle-exclamation", "question": "What happened to the package?", "description": "Damaged or wrong: $0.00 replacement, no return. Lost over 10 business days: request to Jesica Fraga. Delivered but missing: wait 24 hours, then free replacement.", "options": [{"label": "Replacement processed", "subtext": "Document", "targetNode": 18}]},
+{"step": 11, "title": "Medical Trigger", "icon": "fa-solid fa-kit-medical", "question": "Have you stopped all sales and retention?", "description": "Do not diagnose. Issue 100% refund, flag Medical Trigger, escalate to QA and April/Jose.", "options": [{"label": "Done", "subtext": "Document", "targetNode": 18}], "script": "Our supplements are extremely safe; however, we mandate that you consult your physician before taking the product. Show them the label to ensure it aligns with your treatment. Please stop taking the product immediately. Please note: this product is strictly prohibited for those under 18, or women who are pregnant or nursing."},
+{"step": 12, "title": "Chargeback / Legal Bypass", "icon": "fa-solid fa-gavel", "question": "Refund issued with no return?", "description": "Within 180 days only. Bypass STS and returns. 100% refund. Escalate to April or Jose. On Day 181+ get SME or Manager approval first.", "options": [{"label": "Done", "subtext": "Document", "targetNode": 18}], "script": "I want to make this completely right for you today without any hassle. I have bypassed our standard return policy and processed an immediate 100% full refund of your purchase back to your card. There is absolutely no need to return your bottles. You will see the funds post to your statement within 7 to 14 business days. No further action is required on your part."},
+{"step": 13, "title": "Product / Wellness Question", "icon": "fa-solid fa-book-medical", "question": "Any blood-thinner use before recommending turmeric products?", "description": "Educate on the 4 to 8 week timeline. Never make cure, treat, prevent or diagnose claims.", "options": [{"label": "Wants to cancel", "subtext": "MBG triage", "targetNode": 4}, {"label": "Resolved", "subtext": "Document", "targetNode": 18}]},
+{"step": 14, "title": "Complaint / Supervisor", "icon": "fa-solid fa-user-shield", "question": "Apply E.A.R.S.; still dissatisfied?", "description": "Route to SME Queue (Princes, aka Sam). Never say a manager is unavailable.", "options": [{"label": "Escalated", "subtext": "Document", "targetNode": 18}], "script": "I completely understand your frustration, and your concerns are very important to us. I am going to document your file immediately and escalate your account directly to our Supervisor. Princes/Sam will review your case today and reach out to you within 24 business hours to ensure this is resolved to your satisfaction."},
+{"step": 15, "title": "Outside MBG (Day 181+)", "icon": "fa-solid fa-ban", "question": "Any chargeback threat?", "description": "Deny gracefully with E.A.R.S. No STS. Deny the full refund. With a chargeback threat, notify SME or Manager for approval of a courtesy full refund. Do not confirm any refund to the customer before escalation.", "options": [{"label": "Chargeback threat", "subtext": "Notify SME or Manager for courtesy refund approval", "targetNode": 14}, {"label": "None", "subtext": "Document", "targetNode": 18}], "script": "Our comprehensive safety net has concluded, but we want to continue supporting your health."},
+{"step": 16, "title": "Ghost Call Protocol", "icon": "fa-solid fa-phone-slash", "question": "Have you completed all 3 attempts?", "description": "0-3s greeting, 4-6s 'Hello? Can you hear me?', 7-9s 10-second warning, then disconnect.", "options": [{"label": "Disconnected and logged", "subtext": "Restart", "targetNode": 1}], "script": "Since I did not receive any response, I am now disconnecting the call. Please call us back at 1-(888) 632-2690 or email us at support@azuravitalbalance.com so we can assist you. Have a great day and goodbye for now."},
+{"step": 17, "title": "Unauthorized Caller", "icon": "fa-solid fa-user-lock", "question": "Authentication failed", "description": "Refuse account access. Offer general product support only. Disposition: Unauthorized Caller.", "options": [{"label": "Restart", "subtext": "New call", "targetNode": 1}], "script": "For security, I cannot disclose order details without identity verification."},
+{"step": 18, "title": "Document & Close", "icon": "fa-solid fa-circle-check", "question": "Is the green-text CRM note complete?", "description": "'If it isn't in the notes, it didn't happen.' Give refund or delivery timelines. Wait 5 seconds for the customer to disconnect.", "options": [{"label": "New call", "subtext": "Restart", "targetNode": 1}], "script": "Thank you again for calling [Azura Vital Balance / GI Revitalize / Joint Hero]! We truly appreciate your loyalty to our brand. Have a great day!"}]);
+
+        const currentTreeNodeIndex = ref(0);
+        const currentTreeNode = computed(() => decisionTreeNodes.value[currentTreeNodeIndex.value]);
+
+        const advanceDecisionTree = (targetNodeId) => {
+          const idx = decisionTreeNodes.value.findIndex(n => n.step === targetNodeId);
+          if (idx !== -1) {
+            currentTreeNodeIndex.value = idx;
+          } else {
+            currentTreeNodeIndex.value = 0;
+          }
+        };
+
+        const resetDecisionTree = () => {
+          currentTreeNodeIndex.value = 0;
+        };
+
+        // Calculators State
+        const calcDeliveryDate = ref('');
+        const calcOrderTotal = ref(149.85);
+
+        const calcMBGResult = computed(() => {
+          if (!calcDeliveryDate.value) return null;
+          const days = Math.floor((new Date() - new Date(calcDeliveryDate.value)) / 86400000);
+          let zone, action;
+          if (days < 0) { zone = "Invalid: date is in the future"; action = "Re-check the original purchase date in the CRM."; }
+          else if (days <= 176) { zone = "Standard window (Days 0-176)"; action = "Eligible for STS: Tier 1 (20%), then Tier 2 (50%), then RMA if declined."; }
+          else if (days <= 180) { zone = "High-risk zone (Days 177-180)"; action = "Attempt STS briefly; if declined or chargeback friction, process RMA immediately."; }
+          else if (days <= 209) { zone = "Outside MBG (Days 181-209)"; action = "Outside MBG. No STS. Deny the full refund. If a chargeback is threatened, notify SME or Manager and get approval for a courtesy full refund. Do not confirm a refund to the customer before approval."; }
+          else { zone = "Outside MBG (Days 210+)"; action = "Guarantee concluded. Deny gracefully. If a chargeback is threatened, notify and escalate to SME or Manager: a full refund may be granted, subject to approval. Do not confirm a refund to the customer before escalation. (GI Revitalize has a separate 210-day Null Route.)"; }
+          return { daysElapsed: days, eligible: days >= 0 && days <= 180, zone, action, source: "Master Guide: Flow 7 and Module 7.1. Counted from ORIGINAL PURCHASE DATE." };
+        });
+
+        // QA Items State
+        const qaItems = ref([{category:"Account Security (Red Flag)",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:10,passed:true},{category:"Opening",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:3,passed:true},{category:"Empathy",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:3,passed:true},{category:"Acknowledgment",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:6,passed:true},{category:"Engagement",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:6,passed:true},{category:"Professionalism (Red Flag)",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:10,passed:true},{category:"Verbal Collision",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:3,passed:true},{category:"Active Listening",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:6,passed:true},{category:"Hold Procedure and Dead Air (P-E-T-A)",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:3,passed:true},{category:"Probing",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:8,passed:true},{category:"Procedure",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:10,passed:true},{category:"Adherence (Red Flag)",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:10,passed:true},{category:"Follow Through: timelines",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:4,passed:true},{category:"Follow Through: escalation submitted",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:10,passed:true},{category:"Closure: summary",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:4,passed:true},{category:"Closure: further assistance and value statement",description:"IB Call QA Monitoring Form (Module 10). Rating conversion for Outstanding / Needs Improvement / Unsatisfactory is not provided in the source.",points:4,passed:true}]);
+
+        const calculateQAScore = () => {
+          return qaItems.value.reduce((total, item) => total + (item.passed ? item.points : 0), 0);
+        };
+
+        // FAQs
+        const faqs = ref([{q:"What is the Money-Back Guarantee window?",a:"180 days from the ORIGINAL PURCHASE DATE (Master Guide Flow 7). Days 181-209: outside MBG, no STS, refund denied; if a chargeback is threatened, get SME or Manager approval for a courtesy full refund. GI Revitalize also has a 210-day Null Route with no physical return."},{q:"Can an order be changed after 48 hours?",a:"No. Red Zone (48+ hours or shipped) is locked. Instruct the customer to write REFUSED on the unopened package, or process a return (Flow 6)."},{q:"A customer reports a reaction, pregnancy, or is under 18?",a:"Stop all sales and retention. Read the mandatory medical script verbatim, advise stopping the product and consulting a physician, issue a 100% refund with no return, flag Medical Trigger, escalate to QA and April/Jose (Flow 14)."},{q:"Customer threatens a chargeback, BBB, Attorney General or lawsuit?",a:"Bypass all retention and returns. Issue an immediate 100% refund, no bottle return, flag and escalate to April or Jose (Flow 15). Within 180 days only: on Day 181+ get SME or Manager approval for a courtesy full refund."},{q:"Are prepaid return labels or restocking fees allowed?",a:"No. Customer pays return postage, and no restocking fee is charged. Returns go to JetPack Shipping Returns, 285 Northeast Ave, Tallmadge, OH 44278, never the Sheridan, WY address (Flow 10)."},{q:"Which STS offers can I use?",a:"Tier 1: 20% partial refund, then Tier 2: 50% partial refund, both with no bottle return. Tier 3 (free courtesy bottle) is pending approval: DO NOT OFFER (Module 7.2)."}]);
+
+        // Global Search Logic
+        const allSearchableItems = computed(() => {
+          const list = [];
+          topCallDrivers.value.forEach(d => {
+            list.push({
+              title: `#${d.id} ${d.title}`,
+              category: 'sop',
+              description: d.intent,
+              source: 'Top Call Drivers SOP',
+              item: d,
+              type: 'driver'
+            });
+          });
+          products.value.forEach(p => {
+            list.push({
+              title: p.name,
+              category: 'product',
+              description: `${p.purpose} Dosage: ${p.dosage}`,
+              source: 'Product Knowledge Base',
+              item: p,
+              type: 'product'
+            });
+          });
+          list.push({
+            title: '180-Day Money-Back Guarantee Policy',
+            category: 'policy',
+            description: 'Customer eligibility rules, return RMA procedures, and retention discount offers.',
+            source: 'SOP 8 - MBG Policy',
+            type: 'tab',
+            targetTab: 'mbg-sts'
+          });
+          list.push({
+            title: '2-DPA Customer Authentication Rules',
+            category: 'policy',
+            description: 'Mandatory verification of Name, Email, Order ID, and Zip Code before disclosing details.',
+            source: 'SOP 4 - Authentication',
+            type: 'tab',
+            targetTab: 'authentication'
+          });
+          return list;
+        });
+
+        const filteredSearchResults = computed(() => {
+          if (!globalQuery.value) return allSearchableItems.value;
+          const q = globalQuery.value.toLowerCase();
+          return allSearchableItems.value.filter(item => {
+            const matchesCat = searchCategory.value === 'all' || item.category === searchCategory.value;
+            const matchesText = item.title.toLowerCase().includes(q) || item.description.toLowerCase().includes(q);
+            return matchesCat && matchesText;
+          });
+        });
+
+        const openSearchResult = (res) => {
+          showSearchModal.value = false;
+          if (res.type === 'driver') {
+            activeCallDriver.value = res.item;
+            currentTab.value = 'call-drivers';
+          } else if (res.type === 'product') {
+            activeProduct.value = res.item;
+            currentTab.value = 'product-catalog';
+          } else if (res.type === 'tab') {
+            currentTab.value = res.targetTab;
+          }
+        };
+
+        // Keyboard Shortcut for Ctrl+K Search
+        onMounted(() => {
+          window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { showSearchModal.value = false; activeCallDriver.value = null; activeProduct.value = null; }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+              e.preventDefault();
+              showSearchModal.value = !showSearchModal.value;
+            }
+          });
+        });
+
+        return {
+          currentTab,
+          showSearchModal,
+          globalQuery,
+          searchCategory,
+          driverSearchQuery,
+          productSearchQuery,
+          activeCallDriver,
+          activeProduct,
+          topCallDrivers,
+          filteredCallDrivers,
+          products,
+          filteredProducts,
+          decisionTreeNodes,
+          currentTreeNode,
+          advanceDecisionTree,
+          resetDecisionTree,
+          calcDeliveryDate,
+          calcOrderTotal,
+          calcMBGResult,
+          qaItems,
+          calculateQAScore,
+          faqs,
+          favorites,
+          filteredSearchResults,
+          openSearchResult,
+          openCallDriver,
+          openProductModal,
+          copyText,
+          navigateTo,
+          navClass,
+          toast
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
